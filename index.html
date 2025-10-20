@@ -198,7 +198,18 @@
                 }
                 
                 const data = await response.json();
-                responseDiv.innerHTML = `<div class="success"><strong>AI Response:</strong><br><br>${data.response} <br><br> <p> ${data.created_at} </p> </div>`;
+                
+                responseDiv.innerHTML = `<div class="success"><strong>AI Response:</strong><br><br>${data.response} <br><br> <p>created_at : ${data.created_at} 
+                <br>
+                Total_duration : ${data.total_duration / 1_000_000_000;}
+                <br>
+                 InputTokens : ${prompt_eval_count}   
+                 <br> 
+                 OutputTokens : ${eval_count} 
+                <br> 
+                 TotalTokens : ${data.prompt_eval_count + data.eval_count}
+    
+                </p> </div>`;
                 console.log(data);
                 
                 // Clear input for next question
