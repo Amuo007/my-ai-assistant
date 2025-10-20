@@ -199,6 +199,7 @@
                 
                 const data = await response.json();
                 responseDiv.innerHTML = `<div class="success"><strong>AI Response:</strong><br><br>${data.response}</div>`;
+                console.log(data);
                 
                 // Clear input for next question
                 promptInput.value = '';
