@@ -71,7 +71,7 @@
         }
         .chart-container {
             position: relative;
-            height: 200px;
+            height: 300px;
             margin-top: 20px;
         }
         #response {
@@ -140,8 +140,8 @@
                             </div>
                         </div>
 
-                        <!-- Single Chart -->
-                        <div class="chart-container" style="height: 300px;">
+                        <!-- Single Combined Chart -->
+                        <div class="chart-container">
                             <canvas id="systemChart"></canvas>
                         </div>
                     </div>
@@ -178,98 +178,126 @@
         
         let ws;
         const maxDataPoints = 30;
-        const chartData = {
-            cpu: { labels: [], data: [] },
-            ram: { labels: [], data: [] },
-            temp: { labels: [], data: [] }
-        };
+        const timeLabels = [];
+        const cpuData = [];
+        const ramData = [];
+        const tempData = [];
         
-        // Chart configurations
-        const chartConfig = {
+        // Create single chart with all three metrics
+        const systemChart = new Chart(document.getElementById('systemChart'), {
             type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: 'CPU Usage (%)',
+                        data: cpuData,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5
+                    },
+                    {
+                        label: 'RAM Usage (%)',
+                        data: ramData,
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5
+                    },
+                    {
+                        label: 'Temperature (°C)',
+                        data: tempData,
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
                 plugins: {
-                    legend: { display: false }
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 12 }
+                    }
                 },
                 scales: {
+                    x: {
+                        display: true,
+                        grid: {
+                            display: false
+                        }
+                    },
                     y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
                         beginAtZero: true,
-                        max: 100
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'CPU & RAM Usage (%)',
+                            font: { size: 12 }
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        suggestedMin: 30,
+                        suggestedMax: 80,
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)',
+                            font: { size: 12 }
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '°C';
+                            }
+                        }
                     }
                 },
-                animation: { duration: 500 }
-            }
-        };
-        
-        const cpuChart = new Chart(document.getElementById('cpuCanvas'), {
-            ...chartConfig,
-            data: {
-                labels: chartData.cpu.labels,
-                datasets: [{
-                    label: 'CPU Usage (%)',
-                    data: chartData.cpu.data,
-                    borderColor: '#667eea',
-                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            }
-        });
-        
-        const ramChart = new Chart(document.getElementById('ramCanvas'), {
-            ...chartConfig,
-            data: {
-                labels: chartData.ram.labels,
-                datasets: [{
-                    label: 'RAM Usage (%)',
-                    data: chartData.ram.data,
-                    borderColor: '#28a745',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            }
-        });
-        
-        const tempChart = new Chart(document.getElementById('tempCanvas'), {
-            ...chartConfig,
-            data: {
-                labels: chartData.temp.labels,
-                datasets: [{
-                    label: 'Temperature (°C)',
-                    data: chartData.temp.data,
-                    borderColor: '#dc3545',
-                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                ...chartConfig.options,
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        suggestedMin: 30,
-                        suggestedMax: 80
-                    }
+                animation: {
+                    duration: 750
                 }
             }
         });
-        
-        function updateChart(chart, dataObj, value) {
-            const time = new Date().toLocaleTimeString();
-            dataObj.labels.push(time);
-            dataObj.data.push(value);
-            
-            if (dataObj.labels.length > maxDataPoints) {
-                dataObj.labels.shift();
-                dataObj.data.shift();
-            }
-            
-            chart.update();
-        }
         
         function connectWebSocket() {
             const wsStatus = document.getElementById('wsStatus');
@@ -286,7 +314,7 @@
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 
-                const temp = data.temperature ? parseFloat(data.temperature) : null;
+                const temp = data.temperature ? parseFloat(data.temperature) : 40;
                 const cpu = parseFloat(data.cpu);
                 const ram = parseFloat(data.ram);
                 
@@ -295,9 +323,21 @@
                 document.getElementById('ram').textContent = ram + '%';
                 document.getElementById('processes').textContent = data.processes;
                 
-                updateChart(cpuChart, chartData.cpu, cpu);
-                updateChart(ramChart, chartData.ram, ram);
-                if (temp) updateChart(tempChart, chartData.temp, temp);
+                // Update chart
+                const time = new Date().toLocaleTimeString();
+                timeLabels.push(time);
+                cpuData.push(cpu);
+                ramData.push(ram);
+                tempData.push(temp);
+                
+                if (timeLabels.length > maxDataPoints) {
+                    timeLabels.shift();
+                    cpuData.shift();
+                    ramData.shift();
+                    tempData.shift();
+                }
+                
+                systemChart.update();
             };
             
             ws.onerror = (error) => {
