@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My AI Assistant</title>
+    <title>Pi Monitor + AI Assistant</title>
     <style>
         * {
             margin: 0;
@@ -14,28 +14,53 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
         }
-        .container {
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
-            padding: 40px;
+            padding: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 600px;
-            width: 100%;
         }
         h1 {
             color: #333;
             margin-bottom: 10px;
-            font-size: 2em;
+            font-size: 1.8em;
+        }
+        h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 1.3em;
         }
         .subtitle {
             color: #666;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-size: 0.9em;
+        }
+        .metric {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
         }
         .input-group {
             display: flex;
@@ -77,7 +102,7 @@
             border-radius: 10px;
             padding: 20px;
             min-height: 100px;
-            max-height: 400px;
+            max-height: 300px;
             overflow-y: auto;
             border: 1px solid #e0e0e0;
         }
@@ -101,80 +126,120 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .error {
-            color: #dc3545;
-            padding: 10px;
-            background: #f8d7da;
-            border-radius: 5px;
-        }
-        .success {
-            white-space: pre-wrap;
-            line-height: 1.6;
-        }
-        .stats {
-            margin-top: 15px;
-            padding: 10px;
-            background: #e9ecef;
-            border-radius: 5px;
-            font-size: 0.85em;
-            color: #495057;
-        }
-        .stats strong {
-            color: #333;
-        }
         .status {
-            text-align: center;
-            padding: 10px;
-            margin-top: 20px;
-            border-radius: 10px;
-            font-size: 0.9em;
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
         }
         .status.online {
-            background: #d4edda;
-            color: #155724;
+            background: #28a745;
+            box-shadow: 0 0 10px #28a745;
         }
         .status.offline {
-            background: #f8d7da;
-            color: #721c24;
+            background: #dc3545;
+        }
+        .connection-status {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🤖 My AI Assistant</h1>
-        <p class="subtitle">Powered by TinyLlama on Raspberry Pi 4</p>
-        
-        <div class="input-group">
-            <input type="text" id="prompt" placeholder="Ask me anything..." autofocus>
-            <button onclick="askAI()" id="sendBtn">Send</button>
+    <div class="grid">
+        <!-- System Monitor Card -->
+        <div class="card">
+            <h1>📊 System Monitor</h1>
+            <p class="subtitle">Real-time Raspberry Pi stats</p>
+            
+            <div class="connection-status">
+                <span class="status offline" id="wsStatus"></span>
+                <span id="wsText">Connecting...</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">🌡️ CPU Temperature</span>
+                <span class="metric-value" id="temp">--°C</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">⚡ CPU Usage</span>
+                <span class="metric-value" id="cpu">--%</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">💾 RAM Usage</span>
+                <span class="metric-value" id="ram">--%</span>
+            </div>
+            
+            <div class="metric">
+                <span class="metric-label">🔢 Processes</span>
+                <span class="metric-value" id="processes">--</span>
+            </div>
         </div>
-        
-        <div id="response"></div>
-        
-        <div id="status" class="status"></div>
+
+        <!-- AI Assistant Card -->
+        <div class="card">
+            <h1>🤖 AI Assistant</h1>
+            <p class="subtitle">Powered by TinyLlama</p>
+            
+            <div class="input-group">
+                <input type="text" id="prompt" placeholder="Ask me anything..." autofocus>
+                <button onclick="askAI()" id="sendBtn">Send</button>
+            </div>
+            
+            <div id="response"></div>
+        </div>
     </div>
 
     <script>
-        // UPDATE THIS WITH YOUR CLOUDFLARE URL
         const API_URL = 'https://rejected-breeds-watching-return.trycloudflare.com';
+        const WS_URL = 'wss://rejected-breeds-watching-return.trycloudflare.com';
         
-        async function checkStatus() {
-            const statusDiv = document.getElementById('status');
-            try {
-                const response = await fetch(`${API_URL}/api/tags`);
-                if (response.ok) {
-                    statusDiv.className = 'status online';
-                    statusDiv.textContent = '🟢 API Online - Ready to chat!';
-                } else {
-                    statusDiv.className = 'status offline';
-                    statusDiv.textContent = '🔴 API Offline';
-                }
-            } catch (error) {
-                statusDiv.className = 'status offline';
-                statusDiv.textContent = '🔴 Cannot connect to API';
-            }
+        let ws;
+        
+        // WebSocket connection for live monitoring
+        function connectWebSocket() {
+            const wsStatus = document.getElementById('wsStatus');
+            const wsText = document.getElementById('wsText');
+            
+            ws = new WebSocket(WS_URL);
+            
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+                wsStatus.className = 'status online';
+                wsText.textContent = 'Live monitoring active';
+            };
+            
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                document.getElementById('temp').textContent = data.temperature ? data.temperature + '°C' : 'N/A';
+                document.getElementById('cpu').textContent = data.cpu + '%';
+                document.getElementById('ram').textContent = data.ram + '%';
+                document.getElementById('processes').textContent = data.processes;
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                wsStatus.className = 'status offline';
+                wsText.textContent = 'Connection error';
+            };
+            
+            ws.onclose = () => {
+                console.log('WebSocket closed, reconnecting in 5s...');
+                wsStatus.className = 'status offline';
+                wsText.textContent = 'Reconnecting...';
+                setTimeout(connectWebSocket, 5000);
+            };
         }
         
+        // AI Assistant function
         async function askAI() {
             const promptInput = document.getElementById('prompt');
             const responseDiv = document.getElementById('response');
@@ -194,7 +259,7 @@
                     },
                     body: JSON.stringify({
                         model: 'tinyllama',
-                        prompt: prompt + '\nRespond concisely:',
+                        prompt: prompt,
                         stream: false,
                         options: {
                             num_predict: 100,
@@ -208,51 +273,27 @@
                 }
                 
                 const data = await response.json();
+                responseDiv.innerHTML = `<div style="white-space: pre-wrap; line-height: 1.6;"><strong>Response:</strong><br><br>${data.response}</div>`;
                 
-                // Calculate timing in seconds
-                const totalSeconds = (data.total_duration / 1_000_000_000).toFixed(2);
-                const totalTokens = (data.prompt_eval_count || 0) + (data.eval_count || 0);
-                const tokensPerSec = (totalTokens / totalSeconds).toFixed(1);
-                
-                responseDiv.innerHTML = `
-                    <div class="success">
-                        <strong>AI Response:</strong><br><br>
-                        ${data.response}
-                    </div>
-                    <div class="stats">
-                        <strong>⏱️ Stats:</strong><br>
-                        Total Duration: ${totalSeconds}s<br>
-                        Input Tokens: ${data.prompt_eval_count || 0}<br>
-                        Output Tokens: ${data.eval_count || 0}<br>
-                        Total Tokens: ${totalTokens}<br>
-                        Speed: ${tokensPerSec} tokens/sec
-                    </div>
-                `;
-                
-                console.log('Full response:', data);
-                
-                // Clear input for next question
                 promptInput.value = '';
                 promptInput.focus();
                 
             } catch (error) {
-                responseDiv.innerHTML = `<div class="error">Error: ${error.message}<br>Make sure the API is running!</div>`;
+                responseDiv.innerHTML = `<div style="color: #dc3545;">Error: ${error.message}</div>`;
             } finally {
                 button.disabled = false;
             }
         }
         
-        // Allow Enter key to submit
+        // Enter key to submit
         document.getElementById('prompt').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !document.getElementById('sendBtn').disabled) {
                 askAI();
             }
         });
         
-        // Check API status on load
-        checkStatus();
-        // Check every 30 seconds
-        setInterval(checkStatus, 30000);
+        // Connect WebSocket on load
+        connectWebSocket();
     </script>
 </body>
 </html>
