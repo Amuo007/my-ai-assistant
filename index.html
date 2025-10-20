@@ -24,7 +24,7 @@
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
         }
         h1 {
@@ -80,6 +80,29 @@
             max-height: 400px;
             overflow-y: auto;
             border: 1px solid #e0e0e0;
+            margin-bottom: 15px;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .metric {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .metric-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .metric-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
         }
         .loading {
             color: #666;
@@ -126,6 +149,27 @@
             background: #f8d7da;
             color: #721c24;
         }
+        .history {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .history-item {
+            background: #fafafa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+        .history-prompt {
+            color: #667eea;
+            font-weight: bold;
+        }
+        .history-metrics {
+            color: #666;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -140,21 +184,48 @@
         
         <div id="response"></div>
         
+        <div class="metrics" id="metrics" style="display: none;">
+            <div class="metric">
+                <div class="metric-label">Response Time</div>
+                <div class="metric-value" id="responseTime">-</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Tokens Generated</div>
+                <div class="metric-value" id="tokenCount">-</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Tokens/Second</div>
+                <div class="metric-value" id="tokensPerSec">-</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Model</div>
+                <div class="metric-value" id="modelName">-</div>
+            </div>
+        </div>
+        
         <div id="status" class="status"></div>
+        
+        <div class="history" id="history" style="display: none;">
+            <h3>Recent Queries</h3>
+            <div id="historyList"></div>
+        </div>
     </div>
 
     <script>
         // UPDATE THIS WITH YOUR CLOUDFLARE URL
-       // const API_URL = 'https://jesse-style-responding-fortune.trycloudflare.com';
         const API_URL = 'https://rice-positioning-staff-options.trycloudflare.com';
+        
+        let queryHistory = [];
         
         async function checkStatus() {
             const statusDiv = document.getElementById('status');
             try {
                 const response = await fetch(`${API_URL}/api/tags`);
                 if (response.ok) {
+                    const data = await response.json();
+                    const modelCount = data.models ? data.models.length : 0;
                     statusDiv.className = 'status online';
-                    statusDiv.textContent = '🟢 API Online - Ready to chat!';
+                    statusDiv.textContent = `🟢 API Online - ${modelCount} model(s) loaded`;
                 } else {
                     statusDiv.className = 'status offline';
                     statusDiv.textContent = '🔴 API Offline';
@@ -165,16 +236,53 @@
             }
         }
         
+        function formatTime(ms) {
+            if (ms < 1000) return `${ms}ms`;
+            return `${(ms/1000).toFixed(2)}s`;
+        }
+        
+        function updateHistory(prompt, responseTime, tokenCount) {
+            queryHistory.unshift({
+                prompt: prompt,
+                time: responseTime,
+                tokens: tokenCount,
+                timestamp: new Date().toLocaleTimeString()
+            });
+            
+            // Keep only last 5 queries
+            queryHistory = queryHistory.slice(0, 5);
+            
+            const historyDiv = document.getElementById('history');
+            const historyList = document.getElementById('historyList');
+            
+            if (queryHistory.length > 0) {
+                historyDiv.style.display = 'block';
+                historyList.innerHTML = queryHistory.map(item => `
+                    <div class="history-item">
+                        <div class="history-prompt">"${item.prompt}"</div>
+                        <div class="history-metrics">
+                            ${item.timestamp} • ${formatTime(item.time)} • ${item.tokens} tokens
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
         async function askAI() {
             const promptInput = document.getElementById('prompt');
             const responseDiv = document.getElementById('response');
             const button = document.getElementById('sendBtn');
+            const metricsDiv = document.getElementById('metrics');
             
             const prompt = promptInput.value.trim();
             if (!prompt) return;
             
+            // Reset metrics
+            metricsDiv.style.display = 'none';
             button.disabled = true;
             responseDiv.innerHTML = '<div class="loading">Thinking...</div>';
+            
+            const startTime = Date.now();
             
             try {
                 const response = await fetch(`${API_URL}/api/generate`, {
@@ -188,7 +296,8 @@
                         stream: false,
                         options: {
                             num_predict: 100,
-                            temperature: 0.7
+                            temperature: 0.7,
+                            seed: Math.floor(Math.random() * 1000000)
                         }
                     })
                 });
@@ -198,18 +307,101 @@
                 }
                 
                 const data = await response.json();
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+                
+                // Display response
                 responseDiv.innerHTML = `<div class="success"><strong>AI Response:</strong><br><br>${data.response}</div>`;
+                
+                // Calculate and display metrics
+                const tokenCount = data.eval_count || 0;
+                const tokensPerSec = tokenCount > 0 && data.eval_duration ? 
+                    (tokenCount / (data.eval_duration / 1000000000)).toFixed(1) : 'N/A';
+                
+                document.getElementById('responseTime').textContent = formatTime(responseTime);
+                document.getElementById('tokenCount').textContent = tokenCount;
+                document.getElementById('tokensPerSec').textContent = tokensPerSec;
+                document.getElementById('modelName').textContent = data.model || 'tinyllama';
+                
+                metricsDiv.style.display = 'grid';
+                
+                // Update history
+                updateHistory(prompt, responseTime, tokenCount);
                 
                 // Clear input for next question
                 promptInput.value = '';
                 promptInput.focus();
                 
             } catch (error) {
-                responseDiv.innerHTML = `<div class="error">Error: ${error.message}<br>Make sure the API is running!</div>`;
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+                responseDiv.innerHTML = `<div class="error">Error: ${error.message}<br>Failed after ${formatTime(responseTime)}</div>`;
             } finally {
                 button.disabled = false;
             }
         }
+        
+        // Streaming version (alternative - uncomment to use)
+   
+        async function askAIStream() {
+            const promptInput = document.getElementById('prompt');
+            const responseDiv = document.getElementById('response');
+            const button = document.getElementById('sendBtn');
+            
+            const prompt = promptInput.value.trim();
+            if (!prompt) return;
+            
+            button.disabled = true;
+            responseDiv.innerHTML = '';
+            
+            const startTime = Date.now();
+            let tokenCount = 0;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'tinyllama',
+                        prompt: prompt,
+                        stream: true
+                    })
+                });
+                
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                
+                while (true) {
+                    const {value, done} = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+                    
+                    for (const line of lines) {
+                        if (line.trim()) {
+                            const json = JSON.parse(line);
+                            if (json.response) {
+                                responseDiv.innerHTML += json.response;
+                                tokenCount++;
+                            }
+                        }
+                    }
+                }
+                
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+                console.log(`Generated ${tokenCount} tokens in ${formatTime(responseTime)}`);
+                
+            } catch (error) {
+                responseDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            } finally {
+                button.disabled = false;
+            }
+        }
+   
         
         // Allow Enter key to submit
         document.getElementById('prompt').addEventListener('keypress', function(e) {
