@@ -126,6 +126,19 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+
+         .stats {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            font-size: 0.85em;
+            color: #495057;
+        }
+        .stats strong {
+            color: #333;
+        }
         .status {
             display: inline-block;
             width: 12px;
@@ -273,8 +286,25 @@
                 }
                 
                 const data = await response.json();
-                responseDiv.innerHTML = `<div style="white-space: pre-wrap; line-height: 1.6;"><strong>Response:</strong><br><br>${data.response}</div>`;
+   // Calculate timing in seconds
+                const totalSeconds = (data.total_duration / 1_000_000_000).toFixed(2);
+                const totalTokens = (data.prompt_eval_count || 0) + (data.eval_count || 0);
+                const tokensPerSec = (totalTokens / totalSeconds).toFixed(1);
                 
+                responseDiv.innerHTML = `
+                    <div class="success">
+                        <strong>AI Response:</strong><br><br>
+                        ${data.response}
+                    </div>
+                    <div class="stats">
+                        <strong>⏱️ Stats:</strong><br>
+                        Total Duration: ${totalSeconds}s<br>
+                        Input Tokens: ${data.prompt_eval_count || 0}<br>
+                        Output Tokens: ${data.eval_count || 0}<br>
+                        Total Tokens: ${totalTokens}<br>
+                        Speed: ${tokensPerSec} tokens/sec
+                    </div>
+                `;
                 promptInput.value = '';
                 promptInput.focus();
                 
