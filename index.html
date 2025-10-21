@@ -162,7 +162,16 @@
                 <div class="card">
                     <div class="card-body">
                         <h2 class="mb-1"><i class="fas fa-robot"></i> AI Assistant</h2>
-                        <p class="text-muted mb-4">Powered by TinyLlama</p>
+                        <p class="text-muted mb-3">Powered by Ollama</p>
+                        
+                        <div class="mb-3">
+                            <label for="modelSelect" class="form-label small text-muted">Select Model:</label>
+                            <select class="form-select mb-2" id="modelSelect">
+                                <option value="tinyllama">TinyLlama (1.1B)</option>
+                                <option value="phi3">Phi-3 Mini (3.8B)</option>
+                                <option value="mistral">Mistral 7B</option>
+                            </select>
+                        </div>
                         
                         <div class="mb-3">
                             <div class="input-group">
@@ -367,9 +376,12 @@
             const promptInput = document.getElementById('prompt');
             const responseDiv = document.getElementById('response');
             const button = document.getElementById('sendBtn');
+            const modelSelect = document.getElementById('modelSelect');
             
             const prompt = promptInput.value.trim();
             if (!prompt) return;
+            
+            const selectedModel = modelSelect.value;
             
             button.disabled = true;
             responseDiv.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Thinking...</p></div>';
@@ -383,11 +395,11 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: 'tinyllama',
+                        model: selectedModel,
                         prompt: prompt,
                         stream: true,
                         options: {
-                            num_predict: 100,
+                            num_predict: 1000,
                             temperature: 0.7,
                             top_p: 0.9,
                             repeat_penalty: 1.1
@@ -400,9 +412,11 @@
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 
+                const modelName = modelSelect.options[modelSelect.selectedIndex].text;
+                
                 responseDiv.innerHTML = `
                     <div class="alert alert-light mb-0" id="streamingResponse">
-                        <strong><i class="fas fa-comment-dots"></i> AI Response:</strong><br><br>
+                        <strong><i class="fas fa-comment-dots"></i> ${modelName}:</strong><br><br>
                         <span id="responseText"></span><span class="blinking-cursor">▊</span>
                     </div>
                 `;
@@ -456,7 +470,7 @@
                 promptInput.focus();
                 
             } catch (error) {
-                responseDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}</div>`;
+                responseDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}<br><small class="text-muted">Make sure the model is installed: <code>ollama pull ${selectedModel}</code></small></div>`;
             } finally {
                 button.disabled = false;
             }
