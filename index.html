@@ -206,7 +206,7 @@
                                 <option value="llama3.2:1b">Llama 3.2 1B - Better Quality</option>
                                 <option value="gemma:2b">Gemma 2B - Best Quality</option>
                                 <option value="deepseek-coder:1.3b">DeepSeek-Coder 1.3B - Coding 💻</option>
-                                <option value="goekdenizguelmez/JOSIEFIED-Qwen3:0.6b"> Uncensored JOSIEFIED-Qwen3 0.6B - Reasoning 🧠</option>
+                                <option value="goekdenizguelmez/JOSIEFIED-Qwen3:0.6b"> Uncensored! JOSIEFIED-Qwen3 0.6B - Reasoning 🧠</option>
                             </select>
                         </div>
                         
@@ -228,8 +228,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
-        const API_URL = 'https://sciences-crimes-pay-vampire.trycloudflare.com';
-        const WS_URL = 'wss://sciences-crimes-pay-vampire.trycloudflare.com';
+        const API_URL = 'https://country-operation-reached-soap.trycloudflare.com';
+        const WS_URL = 'wss://country-operation-reached-soap.trycloudflare.com';
         
         let ws;
         const maxDataPoints = 30;
@@ -460,8 +460,17 @@
                 
                 const responseText = document.getElementById('responseText');
                 
-                // Function to format response with code blocks
+                // Function to format response with code blocks and thinking process
                 function formatResponse(text) {
+                    // Style thinking sections differently
+                    text = text.replace(/(Thinking\.\.\.)([\s\S]*?)(\.\.\.done thinking\.)/gi, function(match, start, thinking, end) {
+                        return `<div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #ffc107;">
+                            <strong style="color: #856404;">💭 ${start}</strong><br>
+                            <span style="color: #856404; font-style: italic;">${thinking}</span><br>
+                            <strong style="color: #856404;">${end}</strong>
+                        </div>`;
+                    });
+                    
                     // Convert markdown code blocks to HTML
                     text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match, lang, code) {
                         const language = lang || 'code';
