@@ -169,7 +169,6 @@
                             <select class="form-select mb-2" id="modelSelect">
                                 <option value="tinyllama">TinyLlama (1.1B)</option>
                                 <option value="phi3">Phi-3 Mini (3.8B)</option>
-                                <option value="mistral">Mistral 7B</option>
                             </select>
                         </div>
                         
@@ -399,7 +398,7 @@
                         prompt: prompt,
                         stream: true,
                         options: {
-                            num_predict: 100,
+                            num_predict: 1000,
                             temperature: 0.7,
                             top_p: 0.9,
                             repeat_penalty: 1.1
