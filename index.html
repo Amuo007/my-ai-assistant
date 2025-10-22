@@ -1,587 +1,559 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pi Monitor + AI Assistant</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-    <style>
-        body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-        }
-        .metric-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: transform 0.2s;
-        }
-        .metric-card:hover {
-            transform: translateY(-5px);
-        }
-        .metric-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #2a5298;
-        }
-        .metric-label {
-            color: #6c757d;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        .btn-gradient {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            border: none;
-            color: white;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-gradient:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(42, 82, 152, 0.4);
-            color: white;
-        }
-        .chart-container {
-            position: relative;
-            height: 300px;
-            margin-top: 20px;
-        }
-        #response {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            min-height: 100px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .stats-box {
-            background: #e9ecef;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            font-size: 0.85rem;
-        }
-        .blinking-cursor {
-            animation: blink 1s infinite;
-            color: #2a5298;
-            font-weight: bold;
-        }
-        @keyframes blink {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0; }
-        }
-        /* Code block styling */
-        pre {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 10px 0;
-        }
-        code {
-            background: #2d2d2d;
-            color: #f92672;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-        }
-        pre code {
-            background: transparent;
-            color: #f8f8f2;
-            padding: 0;
-        }
-        .code-header {
-            background: #1e1e1e;
-            color: #ccc;
-            padding: 8px 15px;
-            border-radius: 8px 8px 0 0;
-            font-size: 0.85rem;
-            font-family: monospace;
-            margin-bottom: -10px;
-        }
-        #responseText {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pi Monitor + AI Assistant</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+    }
+    .metric-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 15px;
+      transition: transform 0.2s;
+    }
+    .metric-card:hover { transform: translateY(-5px); }
+    .metric-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #2a5298;
+    }
+    .metric-label {
+      color: #6c757d;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .btn-gradient {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      border: none;
+      color: white;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-gradient:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(42,82,152,0.4);
+      color: white;
+    }
+    .chart-container { position: relative; height: 300px; margin-top: 20px; }
+    #response {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      min-height: 100px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .stats-box {
+      background: #e9ecef;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 15px;
+      font-size: 0.85rem;
+    }
+    .blinking-cursor {
+      animation: blink 1s infinite;
+      color: #2a5298;
+      font-weight: bold;
+    }
+    @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+    /* Code block styling */
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+    code {
+      background: #2d2d2d;
+      color: #f92672;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+    pre code { background: transparent; color: #f8f8f2; padding: 0; }
+    .code-header {
+      background: #1e1e1e;
+      color: #ccc;
+      padding: 8px 15px;
+      border-radius: 8px 8px 0 0;
+      font-size: 0.85rem;
+      font-family: monospace;
+      margin-bottom: -10px;
+    }
+    #responseText { white-space: pre-wrap; word-wrap: break-word; }
+  </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row g-4">
-            <!-- System Monitor Card -->
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div>
-                                <h2 class="mb-1"><i class="fas fa-chart-line"></i> System Monitor</h2>
-                                <p class="text-muted mb-0">Real-time Raspberry Pi Statistics</p>
-                            </div>
-                            <span class="status-badge bg-success bg-opacity-10" id="wsStatus">
-                                <span class="status-dot bg-success"></span>
-                                <span id="wsText">Connecting...</span>
-                            </span>
-                        </div>
-                        
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6 col-lg-3">
-                                <div class="metric-card text-center">
-                                    <i class="fas fa-temperature-high fa-2x text-danger mb-2"></i>
-                                    <div class="metric-label">CPU Temp</div>
-                                    <div class="metric-value" id="temp">--°C</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="metric-card text-center">
-                                    <i class="fas fa-microchip fa-2x text-primary mb-2"></i>
-                                    <div class="metric-label">CPU Usage</div>
-                                    <div class="metric-value" id="cpu">--%</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="metric-card text-center">
-                                    <i class="fas fa-memory fa-2x text-success mb-2"></i>
-                                    <div class="metric-label">RAM Usage</div>
-                                    <div class="metric-value" id="ram">--%</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <div class="metric-card text-center">
-                                    <i class="fas fa-tasks fa-2x text-warning mb-2"></i>
-                                    <div class="metric-label">Processes</div>
-                                    <div class="metric-value" id="processes">--</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Single Combined Chart -->
-                        <div class="chart-container">
-                            <canvas id="systemChart"></canvas>
-                        </div>
-                    </div>
-                </div>
+  <div class="container-fluid">
+    <div class="row g-4">
+      <!-- System Monitor Card -->
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <h2 class="mb-1"><i class="fas fa-chart-line"></i> System Monitor</h2>
+                <p class="text-muted mb-0">Real-time Raspberry Pi Statistics</p>
+              </div>
+              <span class="status-badge bg-success bg-opacity-10" id="wsStatus">
+                <span class="status-dot bg-success"></span>
+                <span id="wsText">Connecting...</span>
+              </span>
             </div>
 
-            <!-- AI Assistant Card -->
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h2 class="mb-1"><i class="fas fa-robot"></i> AI Assistant</h2>
-                        <p class="text-muted mb-3">Powered by Ollama</p>
-                        
-                        <div class="mb-3">
-                            <label for="modelSelect" class="form-label small text-muted">Select Model:</label>
-                            <select class="form-select mb-2" id="modelSelect">
-                                <option value="qwen2.5:0.5b">Qwen 0.5B - Best Balance ⭐</option>
-                                <option value="tinyllama">TinyLlama 1.1B - Fastest</option>
-                                <option value="llama3.2:1b">Llama 3.2 1B - Better Quality</option>
-                                <option value="gemma:2b">Gemma 2B - Best Quality</option>
-                                <option value="deepseek-coder:1.3b">DeepSeek-Coder 1.3B - Coding 💻</option>
-                                <option value="goekdenizguelmez/JOSIEFIED-Qwen3:0.6b"> Uncensored! JOSIEFIED-Qwen3 0.6B - Reasoning 🧠</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="prompt" placeholder="Ask me anything..." autofocus>
-                                <button class="btn btn-gradient px-4" onclick="askAI()" id="sendBtn">
-                                    <i class="fas fa-paper-plane"></i> Send
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div id="response"></div>
-                    </div>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6 col-lg-3">
+                <div class="metric-card text-center">
+                  <i class="fas fa-temperature-high fa-2x text-danger mb-2"></i>
+                  <div class="metric-label">CPU Temp</div>
+                  <div class="metric-value" id="temp">--°C</div>
                 </div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="metric-card text-center">
+                  <i class="fas fa-microchip fa-2x text-primary mb-2"></i>
+                  <div class="metric-label">CPU Usage</div>
+                  <div class="metric-value" id="cpu">--%</div>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="metric-card text-center">
+                  <i class="fas fa-memory fa-2x text-success mb-2"></i>
+                  <div class="metric-label">RAM Usage</div>
+                  <div class="metric-value" id="ram">--%</div>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="metric-card text-center">
+                  <i class="fas fa-tasks fa-2x text-warning mb-2"></i>
+                  <div class="metric-label">Processes</div>
+                  <div class="metric-value" id="processes">--</div>
+                </div>
+              </div>
             </div>
 
-<div class="col-md-6 col-lg-3">
-    <div class="metric-card text-center">
-        <i class="fas fa-users fa-2x text-success mb-2"></i>
-        <div class="metric-label">Users Online</div>
-        <div class="metric-value" id="userCount">--</div>
-    </div>
-</div>
-            
+            <!-- Single Combined Chart -->
+            <div class="chart-container">
+              <canvas id="systemChart"></canvas>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- AI Assistant Card -->
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-body">
+            <h2 class="mb-1"><i class="fas fa-robot"></i> AI Assistant</h2>
+            <p class="text-muted mb-3">Powered by Ollama</p>
+
+            <div class="mb-3">
+              <label for="modelSelect" class="form-label small text-muted">Select Model:</label>
+              <select class="form-select mb-2" id="modelSelect">
+                <option value="qwen2.5:0.5b">Qwen 0.5B - Best Balance ⭐</option>
+                <option value="tinyllama">TinyLlama 1.1B - Fastest</option>
+                <option value="llama3.2:1b">Llama 3.2 1B - Better Quality</option>
+                <option value="gemma:2b">Gemma 2B - Best Quality</option>
+                <option value="deepseek-coder:1.3b">DeepSeek-Coder 1.3B - Coding 💻</option>
+                <option value="goekdenizguelmez/JOSIEFIED-Qwen3:0.6b"> Uncensored! JOSIEFIED-Qwen3 0.6B - Reasoning 🧠</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <div class="input-group">
+                <input type="text" class="form-control" id="prompt" placeholder="Ask me anything..." autofocus>
+                <button class="btn btn-gradient px-4" id="sendBtn" onclick="askAI()">
+                  <i class="fas fa-paper-plane"></i> Send
+                </button>
+              </div>
+            </div>
+
+            <div id="response"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div class="metric-card text-center">
+          <i class="fas fa-users fa-2x text-success mb-2"></i>
+          <div class="metric-label">Users Online</div>
+          <div class="metric-value" id="userCount">--</div>
+        </div>
+      </div>
+
     </div>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const API_URL = 'https://hosts-cloud-achievement-politicians.trycloudflare.com';
-        const WS_URL = 'wss://hosts-cloud-achievement-politicians.trycloudflare.com';
-        
-        let ws;
-        const maxDataPoints = 30;
-        const timeLabels = [];
-        const cpuData = [];
-        const ramData = [];
-        const tempData = [];
-        
-        // Create single chart with all three metrics
-        const systemChart = new Chart(document.getElementById('systemChart'), {
-            type: 'line',
-            data: {
-                labels: timeLabels,
-                datasets: [
-                    {
-                        label: 'CPU Usage (%)',
-                        data: cpuData,
-                        borderColor: '#2a5298',
-                        backgroundColor: 'rgba(42, 82, 152, 0.1)',
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointRadius: 3,
-                        pointHoverRadius: 5
-                    },
-                    {
-                        label: 'RAM Usage (%)',
-                        data: ramData,
-                        borderColor: '#28a745',
-                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointRadius: 3,
-                        pointHoverRadius: 5
-                    },
-                    {
-                        label: 'Temperature (°C)',
-                        data: tempData,
-                        borderColor: '#dc3545',
-                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointRadius: 3,
-                        pointHoverRadius: 5,
-                        yAxisID: 'y1'
-                    }
-                ]
-            },
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API_URL = 'https://hosts-cloud-achievement-politicians.trycloudflare.com';
+    const WS_URL  = 'wss://hosts-cloud-achievement-politicians.trycloudflare.com';
+
+    let ws;
+    const maxDataPoints = 30;
+    const timeLabels = [];
+    const cpuData = [];
+    const ramData = [];
+    const tempData = [];
+
+    // Create single chart with all three metrics
+    const systemChart = new Chart(document.getElementById('systemChart'), {
+      type: 'line',
+      data: {
+        labels: timeLabels,
+        datasets: [
+          {
+            label: 'CPU Usage (%)',
+            data: cpuData,
+            borderColor: '#2a5298',
+            backgroundColor: 'rgba(42, 82, 152, 0.1)',
+            tension: 0.4,
+            borderWidth: 3,
+            pointRadius: 3,
+            pointHoverRadius: 5
+          },
+          {
+            label: 'RAM Usage (%)',
+            data: ramData,
+            borderColor: '#28a745',
+            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+            tension: 0.4,
+            borderWidth: 3,
+            pointRadius: 3,
+            pointHoverRadius: 5
+          },
+          {
+            label: 'Temperature (°C)',
+            data: tempData,
+            borderColor: '#dc3545',
+            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+            tension: 0.4,
+            borderWidth: 3,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: { usePointStyle: true, padding: 15, font: { size: 12 } }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.8)',
+            padding: 12,
+            titleFont: { size: 13 },
+            bodyFont: { size: 12 }
+          }
+        },
+        scales: {
+          x: { display: true, grid: { display: false } },
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            beginAtZero: true,
+            max: 100,
+            title: { display: true, text: 'CPU & RAM Usage (%)', font: { size: 12 } },
+            ticks: { callback: (v) => v + '%' }
+          },
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            suggestedMin: 30,
+            suggestedMax: 80,
+            title: { display: true, text: 'Temperature (°C)', font: { size: 12 } },
+            grid: { drawOnChartArea: false },
+            ticks: { callback: (v) => v + '°C' }
+          }
+        },
+        animation: { duration: 750 }
+      }
+    });
+
+    function connectWebSocket() {
+      const wsStatus = document.getElementById('wsStatus');
+      const wsText   = document.getElementById('wsText');
+
+      ws = new WebSocket(WS_URL);
+
+      ws.onopen = () => {
+        console.log('WebSocket connected');
+        wsStatus.className = 'status-badge bg-success bg-opacity-10';
+        wsText.innerHTML   = '<span class="status-dot bg-success"></span>Live monitoring active';
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        // System stats
+        if (data.cpu) {
+          const temp = data.temperature ? parseFloat(data.temperature) : 40;
+          const cpu  = parseFloat(data.cpu);
+          const ram  = parseFloat(data.ram);
+
+          document.getElementById('temp').textContent = (isFinite(temp) ? temp : 0) + '°C';
+          document.getElementById('cpu').textContent  = (isFinite(cpu)  ? cpu  : 0) + '%';
+          document.getElementById('ram').textContent  = (isFinite(ram)  ? ram  : 0) + '%';
+          document.getElementById('processes').textContent = data.processes ?? '--';
+
+          const time = new Date().toLocaleTimeString();
+          timeLabels.push(time);
+          cpuData.push(isFinite(cpu) ? cpu : 0);
+          ramData.push(isFinite(ram) ? ram : 0);
+          tempData.push(isFinite(temp) ? temp : 0);
+
+          if (timeLabels.length > maxDataPoints) {
+            timeLabels.shift();
+            cpuData.shift();
+            ramData.shift();
+            tempData.shift();
+          }
+          systemChart.update();
+        }
+
+        // Active users
+        if (data.type === 'user_count') {
+          document.getElementById('userCount').textContent = data.count;
+        }
+
+        // Connection confirmation
+        if (data.type === 'connection') {
+          console.log('Connected as user:', data.userId);
+          document.getElementById('userCount').textContent = data.userCount;
+        }
+      };
+
+      // Keep-alive ping
+      setInterval(() => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: 'ping', timestamp: Date.now() }));
+        }
+      }, 20000);
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        wsStatus.className = 'status-badge bg-danger bg-opacity-10';
+        wsText.innerHTML   = '<span class="status-dot bg-danger"></span>Connection error';
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket closed, reconnecting in 5s...');
+        wsStatus.className = 'status-badge bg-warning bg-opacity-10';
+        wsText.innerHTML   = '<span class="status-dot bg-warning"></span>Reconnecting...';
+        setTimeout(connectWebSocket, 5000);
+      };
+    }
+
+    async function askAI() {
+      const promptInput = document.getElementById('prompt');
+      const responseDiv = document.getElementById('response');
+      const button      = document.getElementById('sendBtn');
+      const modelSelect = document.getElementById('modelSelect');
+
+      const prompt = promptInput.value.trim();
+      if (!prompt) return;
+
+      const selectedModel   = modelSelect.value;
+      const isReasoningModel = selectedModel.includes('JOSIEFIED-Qwen3');
+
+      button.disabled = true;
+      responseDiv.innerHTML = isReasoningModel
+        ? `<div class="alert alert-warning text-center">
+             <i class="fas fa-brain"></i> Gathering thoughts...
+             <div class="small text-muted mt-2">This model will show its reasoning before the final answer.</div>
+           </div>`
+        : `<div class="text-center">
+             <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+             <p class="mt-2 text-muted">Thinking...</p>
+           </div>`;
+
+      // Inject thinking directive ONLY for the reasoning model
+      let promptToSend = prompt;
+      if (isReasoningModel) {
+        promptToSend = `/think
+Before giving your final answer, write your reasoning inside <think>...</think> tags.
+Then after </think>, provide the final answer clearly and concisely.
+${prompt}`;
+      }
+
+      let fullResponse = '';
+      let startTime = Date.now();
+      let tokenCount = 0;
+
+      try {
+        const response = await fetch(`${API_URL}/api/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: selectedModel,
+            prompt: promptToSend,
+            stream: true,
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 15,
-                            font: {
-                                size: 12
-                            }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: 12,
-                        titleFont: { size: 13 },
-                        bodyFont: { size: 12 }
-                    }
-                },
-                scales: {
-                    x: {
-                        display: true,
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true,
-                        max: 100,
-                        title: {
-                            display: true,
-                            text: 'CPU & RAM Usage (%)',
-                            font: { size: 12 }
-                        },
-                        ticks: {
-                            callback: function(value) {
-                                return value + '%';
-                            }
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        suggestedMin: 30,
-                        suggestedMax: 80,
-                        title: {
-                            display: true,
-                            text: 'Temperature (°C)',
-                            font: { size: 12 }
-                        },
-                        grid: {
-                            drawOnChartArea: false
-                        },
-                        ticks: {
-                            callback: function(value) {
-                                return value + '°C';
-                            }
-                        }
-                    }
-                },
-                animation: {
-                    duration: 750
-                }
+              num_predict: 1000,
+              temperature: 0.7,
+              top_p: 0.9,
+              repeat_penalty: 1.1
             }
+          })
         });
-        
-        function connectWebSocket() {
-            const wsStatus = document.getElementById('wsStatus');
-            const wsText = document.getElementById('wsText');
-            
-            ws = new WebSocket(WS_URL);
-            
-            ws.onopen = () => {
-                console.log('WebSocket connected');
-                wsStatus.className = 'status-badge bg-success bg-opacity-10';
-                wsText.innerHTML = '<span class="status-dot bg-success"></span>Live monitoring active';
-            };
-            
-ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    
-    // Existing system stats handling
-    if (data.cpu) {
-        const temp = data.temperature ? parseFloat(data.temperature) : 40;
-        const cpu = parseFloat(data.cpu);
-        const ram = parseFloat(data.ram);
-        
-        document.getElementById('temp').textContent = temp ? temp + '°C' : 'N/A';
-        document.getElementById('cpu').textContent = cpu + '%';
-        document.getElementById('ram').textContent = ram + '%';
-        document.getElementById('processes').textContent = data.processes;
-        
-        // Update chart code...
-        
-                const time = new Date().toLocaleTimeString();
-                timeLabels.push(time);
-                cpuData.push(cpu);
-                ramData.push(ram);
-                tempData.push(temp);
 
-  if (timeLabels.length > maxDataPoints) {
-                    timeLabels.shift();
-                    cpuData.shift();
-                    ramData.shift();
-                    tempData.shift();
-                }
-                
-                systemChart.update();
-        
-    }
-    
-    // NEW: Handle user count
-    if (data.type === 'user_count') {
-        document.getElementById('userCount').textContent = data.count;
-    }
-    
-    // NEW: Handle connection confirmation
-    if (data.type === 'connection') {
-        console.log('Connected as user:', data.userId);
-        document.getElementById('userCount').textContent = data.userCount;
-    }
-};
-            setInterval(() => {
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
-            type: 'ping',
-            timestamp: Date.now()
-        }));
-    }
-}, 20000);
-            
-            ws.onerror = (error) => {
-                console.error('WebSocket error:', error);
-                wsStatus.className = 'status-badge bg-danger bg-opacity-10';
-                wsText.innerHTML = '<span class="status-dot bg-danger"></span>Connection error';
-            };
-            
-            ws.onclose = () => {
-                console.log('WebSocket closed, reconnecting in 5s...');
-                wsStatus.className = 'status-badge bg-warning bg-opacity-10';
-                wsText.innerHTML = '<span class="status-dot bg-warning"></span>Reconnecting...';
-                setTimeout(connectWebSocket, 5000);
-            };
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+        const reader  = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        const modelName = modelSelect.options[modelSelect.selectedIndex].text;
+
+        responseDiv.innerHTML = `
+          <div class="alert alert-light mb-0" id="streamingResponse">
+            <strong><i class="fas fa-comment-dots"></i> ${modelName}:</strong><br><br>
+            <span id="responseText"></span><span class="blinking-cursor">▊</span>
+          </div>
+        `;
+
+        const responseText = document.getElementById('responseText');
+
+        // Format response with code blocks and visible reasoning
+        function formatResponse(text) {
+          // Reasoning block: <think> ... </think>
+          text = text.replace(/<think>([\s\S]*?)<\/think>/gi, function(_match, reasoning) {
+            const safe = reasoning.trim();
+            return `
+              <div style="background:#fff3cd;padding:12px;border-left:4px solid #ffc107;border-radius:6px;margin:8px 0;">
+                <strong style="color:#856404;">🧠 Reasoning:</strong><br>
+                <em style="color:#856404;">${safe}</em>
+              </div>
+            `;
+          });
+
+          // Markdown code fences
+          text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(_m, lang, code) {
+            const language = lang || 'code';
+            return `<div class="code-header">${language}</div><pre><code>${code.replace(/</g,'&lt;').replace(/>/g,'&gt;').trim()}</code></pre>`;
+          });
+
+          // Inline code
+          text = text.replace(/`([^`]+)`/g, function(_m, c) {
+            return `<code>${c.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code>`;
+          });
+
+          // Bold
+          text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+          // Line breaks
+          text = text.replace(/\n/g, '<br>');
+
+          return text;
         }
-        
-        async function askAI() {
-            const promptInput = document.getElementById('prompt');
-            const responseDiv = document.getElementById('response');
-            const button = document.getElementById('sendBtn');
-            const modelSelect = document.getElementById('modelSelect');
-            
-            const prompt = promptInput.value.trim();
-            if (!prompt) return;
-            
-            const selectedModel = modelSelect.value;
-            
-            button.disabled = true;
-            responseDiv.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Thinking...</p></div>';
-            
-            let fullResponse = '';
-            let startTime = Date.now();
-            let tokenCount = 0;
-            
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.trim() === '') continue;
+
             try {
-                const response = await fetch(`${API_URL}/api/generate`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        model: selectedModel,
-                        prompt: prompt,
-                        stream: true,
-                        options: {
-                            num_predict: 1000,
-                            temperature: 0.7,
-                            top_p: 0.9,
-                            repeat_penalty: 1.1
-                        }
-                    })
-                });
-                
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder();
-                
-                const modelName = modelSelect.options[modelSelect.selectedIndex].text;
-                
-                responseDiv.innerHTML = `
-                    <div class="alert alert-light mb-0" id="streamingResponse">
-                        <strong><i class="fas fa-comment-dots"></i> ${modelName}:</strong><br><br>
-                        <span id="responseText"></span><span class="blinking-cursor">▊</span>
+              const data = JSON.parse(line);
+
+              if (data.response) {
+                fullResponse += data.response;
+                responseText.innerHTML = formatResponse(fullResponse);
+                tokenCount++;
+              }
+
+              if (data.done) {
+                const totalSeconds = ((Date.now() - startTime) / 1000).toFixed(2);
+                const tokensPerSec = (tokenCount / Math.max(totalSeconds, 0.01)).toFixed(1);
+
+                const cursor = document.querySelector('.blinking-cursor');
+                if (cursor) cursor.remove();
+
+                responseDiv.innerHTML += `
+                  <div class="stats-box">
+                    <strong><i class="fas fa-clock"></i> Performance Stats:</strong><br>
+                    <div class="row mt-2">
+                      <div class="col-6">Duration: ${totalSeconds}s</div>
+                      <div class="col-6">Speed: ${tokensPerSec} tok/s</div>
+                      <div class="col-6">Input: ${data.prompt_eval_count || 0} tokens</div>
+                      <div class="col-6">Output: ${data.eval_count || tokenCount} tokens</div>
                     </div>
+                  </div>
                 `;
-                
-                const responseText = document.getElementById('responseText');
-                
-                // Function to format response with code blocks and thinking process
-                function formatResponse(text) {
-                    // Style thinking sections differently
-                    text = text.replace(/(Thinking\.\.\.)([\s\S]*?)(\.\.\.done thinking\.)/gi, function(match, start, thinking, end) {
-                        return `<div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #ffc107;">
-                            <strong style="color: #856404;">💭 ${start}</strong><br>
-                            <span style="color: #856404; font-style: italic;">${thinking}</span><br>
-                            <strong style="color: #856404;">${end}</strong>
-                        </div>`;
-                    });
-                    
-                    // Convert markdown code blocks to HTML
-                    text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match, lang, code) {
-                        const language = lang || 'code';
-                        return `<div class="code-header">${language}</div><pre><code>${code.trim()}</code></pre>`;
-                    });
-                    
-                    // Convert inline code
-                    text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
-                    
-                    // Convert bold
-                    text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-                    
-                    // Convert line breaks
-                    text = text.replace(/\n/g, '<br>');
-                    
-                    return text;
-                }
-                
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n');
-                    
-                    for (const line of lines) {
-                        if (line.trim() === '') continue;
-                        
-                        try {
-                            const data = JSON.parse(line);
-                            
-                            if (data.response) {
-                                fullResponse += data.response;
-                                responseText.innerHTML = formatResponse(fullResponse);
-                                tokenCount++;
-                            }
-                            
-                            if (data.done) {
-                                const totalSeconds = ((Date.now() - startTime) / 1000).toFixed(2);
-                                const tokensPerSec = (tokenCount / totalSeconds).toFixed(1);
-                                
-                                document.querySelector('.blinking-cursor').remove();
-                                
-                                responseDiv.innerHTML += `
-                                    <div class="stats-box">
-                                        <strong><i class="fas fa-clock"></i> Performance Stats:</strong><br>
-                                        <div class="row mt-2">
-                                            <div class="col-6">Duration: ${totalSeconds}s</div>
-                                            <div class="col-6">Speed: ${tokensPerSec} tok/s</div>
-                                            <div class="col-6">Input: ${data.prompt_eval_count || 0} tokens</div>
-                                            <div class="col-6">Output: ${data.eval_count || tokenCount} tokens</div>
-                                        </div>
-                                    </div>
-                                `;
-                            }
-                        } catch (e) {
-                            console.error('Parse error:', e);
-                        }
-                    }
-                }
-                
-                promptInput.value = '';
-                promptInput.focus();
-                
-            } catch (error) {
-                responseDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}<br><small class="text-muted">Make sure the model is installed: <code>ollama pull ${selectedModel}</code></small></div>`;
-            } finally {
-                button.disabled = false;
+              }
+            } catch (e) {
+              // Non-JSON lines are ignored safely
+              console.error('Parse error:', e);
             }
+          }
         }
-        
-        document.getElementById('prompt').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !document.getElementById('sendBtn').disabled) {
-                askAI();
-            }
-        });
-        
-        connectWebSocket();
-    </script>
+
+        promptInput.value = '';
+        promptInput.focus();
+
+      } catch (error) {
+        responseDiv.innerHTML = `
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i> Error: ${error.message}<br>
+            <small class="text-muted">Make sure the model is installed: <code>ollama pull ${selectedModel}</code></small>
+          </div>`;
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    // Enter to send
+    document.getElementById('prompt').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !document.getElementById('sendBtn').disabled) {
+        askAI();
+      }
+    });
+
+    // Start WS
+    connectWebSocket();
+  </script>
 </body>
 </html>
