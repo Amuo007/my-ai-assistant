@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -98,6 +98,7 @@
             0%, 49% { opacity: 1; }
             50%, 100% { opacity: 0; }
         }
+        /* Code block styling */
         pre {
             background: #2d2d2d;
             color: #f8f8f2;
@@ -131,26 +132,6 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
-        .active-users-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            animation: fadeIn 0.5s ease-in;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .user-count {
-            font-size: 1.3rem;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -160,22 +141,15 @@
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
                             <div>
                                 <h2 class="mb-1"><i class="fas fa-chart-line"></i> System Monitor</h2>
                                 <p class="text-muted mb-0">Real-time Raspberry Pi Statistics</p>
                             </div>
-                            <div class="d-flex gap-3 align-items-center">
-                                <span class="active-users-badge">
-                                    <i class="fas fa-users"></i>
-                                    <span class="user-count" id="activeUsers">0</span>
-                                    <span>online</span>
-                                </span>
-                                <span class="status-badge bg-success bg-opacity-10" id="wsStatus">
-                                    <span class="status-dot bg-success"></span>
-                                    <span id="wsText">Connecting...</span>
-                                </span>
-                            </div>
+                            <span class="status-badge bg-success bg-opacity-10" id="wsStatus">
+                                <span class="status-dot bg-success"></span>
+                                <span id="wsText">Connecting...</span>
+                            </span>
                         </div>
                         
                         <div class="row g-3 mb-4">
@@ -216,96 +190,89 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- AI Assistant Card -->
             <div class="col-lg-4">
-                <div class="card h-100">
+                <div class="card">
                     <div class="card-body">
                         <h2 class="mb-1"><i class="fas fa-robot"></i> AI Assistant</h2>
-                        <p class="text-muted mb-4">Powered by Ollama</p>
+                        <p class="text-muted mb-3">Powered by Ollama</p>
                         
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Select Model</label>
-                            <select class="form-select" id="modelSelect">
-                                <option value="llama3.2:1b">Llama 3.2 1B (Fast)</option>
-                                <option value="llama3.2:3b">Llama 3.2 3B (Balanced)</option>
-                                <option value="llama3.1:8b">Llama 3.1 8B (Smart)</option>
-                                <option value="qwen2.5:0.5b">Qwen 2.5 0.5B (Fastest)</option>
-                                <option value="gemma2:2b">Gemma 2 2B (Efficient)</option>
+                            <label for="modelSelect" class="form-label small text-muted">Select Model:</label>
+                            <select class="form-select mb-2" id="modelSelect">
+                                <option value="qwen2.5:0.5b">Qwen 0.5B - Best Balance ⭐</option>
+                                <option value="tinyllama">TinyLlama 1.1B - Fastest</option>
+                                <option value="llama3.2:1b">Llama 3.2 1B - Better Quality</option>
+                                <option value="gemma:2b">Gemma 2B - Best Quality</option>
+                                <option value="deepseek-coder:1.3b">DeepSeek-Coder 1.3B - Coding 💻</option>
+                                <option value="goekdenizguelmez/JOSIEFIED-Qwen3:0.6b"> Uncensored! JOSIEFIED-Qwen3 0.6B - Reasoning 🧠</option>
                             </select>
                         </div>
                         
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Your Question</label>
-                            <textarea 
-                                class="form-control" 
-                                id="prompt" 
-                                rows="3" 
-                                placeholder="Ask anything... (Press Enter to send)"
-                            ></textarea>
-                        </div>
-                        
-                        <button class="btn btn-gradient w-100 mb-3" id="sendBtn" onclick="askAI()">
-                            <i class="fas fa-paper-plane"></i> Ask AI
-                        </button>
-                        
-                        <div id="response">
-                            <div class="text-center text-muted">
-                                <i class="fas fa-comments fa-3x mb-3"></i>
-                                <p>Ask me anything about your system, code, or general knowledge!</p>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="prompt" placeholder="Ask me anything..." autofocus>
+                                <button class="btn btn-gradient px-4" onclick="askAI()" id="sendBtn">
+                                    <i class="fas fa-paper-plane"></i> Send
+                                </button>
                             </div>
                         </div>
+                        
+                        <div id="response"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
-        const API_URL = 'http://localhost:8080';
-        const wsStatus = document.getElementById('wsStatus');
-        const wsText = document.getElementById('wsText');
-        const activeUsersElement = document.getElementById('activeUsers');
+        const API_URL = 'https://erik-enabled-programs-value.trycloudflare.com';
+        const WS_URL = 'wss://erik-enabled-programs-value.trycloudflare.com';
         
-        // Chart setup
+        let ws;
         const maxDataPoints = 30;
         const timeLabels = [];
         const cpuData = [];
         const ramData = [];
         const tempData = [];
         
-        const ctx = document.getElementById('systemChart').getContext('2d');
-        const systemChart = new Chart(ctx, {
+        // Create single chart with all three metrics
+        const systemChart = new Chart(document.getElementById('systemChart'), {
             type: 'line',
             data: {
                 labels: timeLabels,
                 datasets: [
                     {
-                        label: 'CPU %',
+                        label: 'CPU Usage (%)',
                         data: cpuData,
-                        borderColor: '#007bff',
-                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                        borderWidth: 2,
+                        borderColor: '#2a5298',
+                        backgroundColor: 'rgba(42, 82, 152, 0.1)',
                         tension: 0.4,
-                        fill: true
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5
                     },
                     {
-                        label: 'RAM %',
+                        label: 'RAM Usage (%)',
                         data: ramData,
                         borderColor: '#28a745',
                         backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                        borderWidth: 2,
                         tension: 0.4,
-                        fill: true
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5
                     },
                     {
-                        label: 'Temp °C',
+                        label: 'Temperature (°C)',
                         data: tempData,
                         borderColor: '#dc3545',
                         backgroundColor: 'rgba(220, 53, 69, 0.1)',
-                        borderWidth: 2,
                         tension: 0.4,
-                        fill: true,
+                        borderWidth: 3,
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
                         yAxisID: 'y1'
                     }
                 ]
@@ -315,102 +282,117 @@
                 maintainAspectRatio: false,
                 interaction: {
                     mode: 'index',
-                    intersect: false,
+                    intersect: false
                 },
                 plugins: {
                     legend: {
                         display: true,
                         position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
                     },
                     tooltip: {
-                        enabled: true
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 12 }
                     }
                 },
                 scales: {
+                    x: {
+                        display: true,
+                        grid: {
+                            display: false
+                        }
+                    },
                     y: {
                         type: 'linear',
                         display: true,
                         position: 'left',
-                        min: 0,
+                        beginAtZero: true,
                         max: 100,
                         title: {
                             display: true,
-                            text: 'Percentage (%)'
+                            text: 'CPU & RAM Usage (%)',
+                            font: { size: 12 }
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
                         }
                     },
                     y1: {
                         type: 'linear',
                         display: true,
                         position: 'right',
-                        min: 20,
-                        max: 80,
+                        suggestedMin: 30,
+                        suggestedMax: 80,
                         title: {
                             display: true,
-                            text: 'Temperature (°C)'
+                            text: 'Temperature (°C)',
+                            font: { size: 12 }
                         },
                         grid: {
-                            drawOnChartArea: false,
+                            drawOnChartArea: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '°C';
+                            }
                         }
                     }
+                },
+                animation: {
+                    duration: 750
                 }
             }
         });
         
-        let ws;
-        
         function connectWebSocket() {
-            ws = new WebSocket('ws://localhost:8080');
+            const wsStatus = document.getElementById('wsStatus');
+            const wsText = document.getElementById('wsText');
+            
+            ws = new WebSocket(WS_URL);
             
             ws.onopen = () => {
                 console.log('WebSocket connected');
                 wsStatus.className = 'status-badge bg-success bg-opacity-10';
-                wsText.innerHTML = '<span class="status-dot bg-success"></span>Connected';
+                wsText.innerHTML = '<span class="status-dot bg-success"></span>Live monitoring active';
             };
             
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 
-                // Handle different message types
-                if (data.type === 'active_users') {
-                    // Update active users count
-                    activeUsersElement.textContent = data.count;
-                    // Add animation effect
-                    activeUsersElement.parentElement.style.animation = 'none';
-                    setTimeout(() => {
-                        activeUsersElement.parentElement.style.animation = 'fadeIn 0.5s ease-in';
-                    }, 10);
-                } else if (data.type === 'system_stats' || !data.type) {
-                    // Update system stats
-                    const temp = data.temperature ? parseFloat(data.temperature) : 40;
-                    const cpu = parseFloat(data.cpu);
-                    const ram = parseFloat(data.ram);
-                    
-                    document.getElementById('temp').textContent = temp ? temp + '°C' : 'N/A';
-                    document.getElementById('cpu').textContent = cpu + '%';
-                    document.getElementById('ram').textContent = ram + '%';
-                    document.getElementById('processes').textContent = data.processes;
-                    
-                    // Update active users if included in system stats
-                    if (data.active_users !== undefined) {
-                        activeUsersElement.textContent = data.active_users;
-                    }
-                    
-                    // Update chart
-                    const time = new Date().toLocaleTimeString();
-                    timeLabels.push(time);
-                    cpuData.push(cpu);
-                    ramData.push(ram);
-                    tempData.push(temp);
-                    
-                    if (timeLabels.length > maxDataPoints) {
-                        timeLabels.shift();
-                        cpuData.shift();
-                        ramData.shift();
-                        tempData.shift();
-                    }
-                    
-                    systemChart.update();
+                const temp = data.temperature ? parseFloat(data.temperature) : 40;
+                const cpu = parseFloat(data.cpu);
+                const ram = parseFloat(data.ram);
+                
+                document.getElementById('temp').textContent = temp ? temp + '°C' : 'N/A';
+                document.getElementById('cpu').textContent = cpu + '%';
+                document.getElementById('ram').textContent = ram + '%';
+                document.getElementById('processes').textContent = data.processes;
+                
+                // Update chart
+                const time = new Date().toLocaleTimeString();
+                timeLabels.push(time);
+                cpuData.push(cpu);
+                ramData.push(ram);
+                tempData.push(temp);
+                
+                if (timeLabels.length > maxDataPoints) {
+                    timeLabels.shift();
+                    cpuData.shift();
+                    ramData.shift();
+                    tempData.shift();
                 }
+                
+                systemChart.update();
             };
             
             ws.onerror = (error) => {
@@ -478,7 +460,9 @@
                 
                 const responseText = document.getElementById('responseText');
                 
+                // Function to format response with code blocks and thinking process
                 function formatResponse(text) {
+                    // Style thinking sections differently
                     text = text.replace(/(Thinking\.\.\.)([\s\S]*?)(\.\.\.done thinking\.)/gi, function(match, start, thinking, end) {
                         return `<div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #ffc107;">
                             <strong style="color: #856404;">💭 ${start}</strong><br>
@@ -487,13 +471,19 @@
                         </div>`;
                     });
                     
+                    // Convert markdown code blocks to HTML
                     text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(match, lang, code) {
                         const language = lang || 'code';
                         return `<div class="code-header">${language}</div><pre><code>${code.trim()}</code></pre>`;
                     });
                     
+                    // Convert inline code
                     text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+                    
+                    // Convert bold
                     text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                    
+                    // Convert line breaks
                     text = text.replace(/\n/g, '<br>');
                     
                     return text;
