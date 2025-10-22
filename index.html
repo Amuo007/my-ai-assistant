@@ -223,6 +223,15 @@
                     </div>
                 </div>
             </div>
+
+<div class="col-md-6 col-lg-3">
+    <div class="metric-card text-center">
+        <i class="fas fa-users fa-2x text-success mb-2"></i>
+        <div class="metric-label">Users Online</div>
+        <div class="metric-value" id="userCount">--</div>
+    </div>
+</div>
+            
         </div>
     </div>
 
@@ -366,34 +375,42 @@
                 wsText.innerHTML = '<span class="status-dot bg-success"></span>Live monitoring active';
             };
             
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                
-                const temp = data.temperature ? parseFloat(data.temperature) : 40;
-                const cpu = parseFloat(data.cpu);
-                const ram = parseFloat(data.ram);
-                
-                document.getElementById('temp').textContent = temp ? temp + '°C' : 'N/A';
-                document.getElementById('cpu').textContent = cpu + '%';
-                document.getElementById('ram').textContent = ram + '%';
-                document.getElementById('processes').textContent = data.processes;
-                
-                // Update chart
-                const time = new Date().toLocaleTimeString();
-                timeLabels.push(time);
-                cpuData.push(cpu);
-                ramData.push(ram);
-                tempData.push(temp);
-                
-                if (timeLabels.length > maxDataPoints) {
-                    timeLabels.shift();
-                    cpuData.shift();
-                    ramData.shift();
-                    tempData.shift();
-                }
-                
-                systemChart.update();
-            };
+ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    
+    // Existing system stats handling
+    if (data.cpu) {
+        const temp = data.temperature ? parseFloat(data.temperature) : 40;
+        const cpu = parseFloat(data.cpu);
+        const ram = parseFloat(data.ram);
+        
+        document.getElementById('temp').textContent = temp ? temp + '°C' : 'N/A';
+        document.getElementById('cpu').textContent = cpu + '%';
+        document.getElementById('ram').textContent = ram + '%';
+        document.getElementById('processes').textContent = data.processes;
+        
+        // Update chart code...
+    }
+    
+    // NEW: Handle user count
+    if (data.type === 'user_count') {
+        document.getElementById('userCount').textContent = data.count;
+    }
+    
+    // NEW: Handle connection confirmation
+    if (data.type === 'connection') {
+        console.log('Connected as user:', data.userId);
+        document.getElementById('userCount').textContent = data.userCount;
+    }
+};
+            setInterval(() => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+            type: 'ping',
+            timestamp: Date.now()
+        }));
+    }
+}, 20000);
             
             ws.onerror = (error) => {
                 console.error('WebSocket error:', error);
