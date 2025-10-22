@@ -390,6 +390,22 @@ ws.onmessage = (event) => {
         document.getElementById('processes').textContent = data.processes;
         
         // Update chart code...
+        
+                const time = new Date().toLocaleTimeString();
+                timeLabels.push(time);
+                cpuData.push(cpu);
+                ramData.push(ram);
+                tempData.push(temp);
+
+  if (timeLabels.length > maxDataPoints) {
+                    timeLabels.shift();
+                    cpuData.shift();
+                    ramData.shift();
+                    tempData.shift();
+                }
+                
+                systemChart.update();
+        
     }
     
     // NEW: Handle user count
