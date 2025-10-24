@@ -64,8 +64,19 @@
       box-shadow: 0 5px 15px rgba(42,82,152,0.4);
       color: white;
     }
+    .btn-rag {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      border: none;
+      color: white;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-rag:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(30,60,114,0.4);
+      color: white;
+    }
     .chart-container { position: relative; height: 300px; margin-top: 20px; }
-    #response {
+    #response, #ragResponse {
       background: #f8f9fa;
       border-radius: 10px;
       padding: 20px;
@@ -113,6 +124,62 @@
       margin-bottom: -10px;
     }
     #responseText { white-space: pre-wrap; word-wrap: break-word; }
+    
+    /* RAG Specific Styles */
+    .rag-source {
+      background: #fff;
+      border-left: 4px solid #667eea;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .rag-source-title {
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 5px;
+    }
+    .rag-source-url {
+      color: #6c757d;
+      font-size: 0.85rem;
+      text-decoration: none;
+      word-break: break-all;
+    }
+    .rag-source-url:hover {
+      color: #667eea;
+      text-decoration: underline;
+    }
+    .rag-answer {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+    .rag-metadata {
+      background: #e3f2fd;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-top: 10px;
+    }
+    .loading-rag {
+      text-align: center;
+      padding: 40px;
+    }
+    .loading-rag .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -205,6 +272,58 @@
         </div>
       </div>
 
+      <!-- NEW: RAG Search Card -->
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h2 class="mb-1"><i class="fas fa-search"></i> RAG Web Search</h2>
+                <p class="text-muted mb-0">Search the web and get AI-powered answers with sources</p>
+              </div>
+              <span class="badge" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+                <i class="fas fa-globe"></i> Powered by Google + Ollama
+              </span>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-8">
+                <div class="input-group mb-3">
+                  <input 
+                    type="text" 
+                    class="form-control form-control-lg" 
+                    id="ragPrompt" 
+                    placeholder="Ask about current events, latest news, products, anything..."
+                    style="border-radius: 10px 0 0 10px;">
+                  <button 
+                    class="btn btn-rag btn-lg px-4" 
+                    id="ragBtn" 
+                    onclick="searchRAG()"
+                    style="border-radius: 0 10px 10px 0;">
+                    <i class="fas fa-search"></i> Search & Answer
+                  </button>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-secondary btn-sm" onclick="setRAGExample('latest iPhone features')">
+                    <i class="fas fa-mobile-alt"></i> iPhone
+                  </button>
+                  <button class="btn btn-outline-secondary btn-sm" onclick="setRAGExample('AI news today')">
+                    <i class="fas fa-robot"></i> AI News
+                  </button>
+                  <button class="btn btn-outline-secondary btn-sm" onclick="setRAGExample('best laptop 2025')">
+                    <i class="fas fa-laptop"></i> Laptops
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div id="ragResponse"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="col-md-6 col-lg-3">
         <div class="metric-card text-center">
           <i class="fas fa-users fa-2x text-success mb-2"></i>
@@ -228,41 +347,36 @@
     const ramData = [];
     const tempData = [];
 
-    // Create single chart with all three metrics
-    const systemChart = new Chart(document.getElementById('systemChart'), {
+    // Chart setup
+    const ctx = document.getElementById('systemChart').getContext('2d');
+    const systemChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: timeLabels,
         datasets: [
           {
-            label: 'CPU Usage (%)',
+            label: 'CPU %',
             data: cpuData,
-            borderColor: '#2a5298',
+            borderColor: 'rgb(42, 82, 152)',
             backgroundColor: 'rgba(42, 82, 152, 0.1)',
             tension: 0.4,
-            borderWidth: 3,
-            pointRadius: 3,
-            pointHoverRadius: 5
+            fill: true
           },
           {
-            label: 'RAM Usage (%)',
+            label: 'RAM %',
             data: ramData,
-            borderColor: '#28a745',
+            borderColor: 'rgb(40, 167, 69)',
             backgroundColor: 'rgba(40, 167, 69, 0.1)',
             tension: 0.4,
-            borderWidth: 3,
-            pointRadius: 3,
-            pointHoverRadius: 5
+            fill: true
           },
           {
-            label: 'Temperature (°C)',
+            label: 'Temp °C',
             data: tempData,
-            borderColor: '#dc3545',
+            borderColor: 'rgb(220, 53, 69)',
             backgroundColor: 'rgba(220, 53, 69, 0.1)',
             tension: 0.4,
-            borderWidth: 3,
-            pointRadius: 3,
-            pointHoverRadius: 5,
+            fill: true,
             yAxisID: 'y1'
           }
         ]
@@ -272,64 +386,51 @@
         maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
         plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-            labels: { usePointStyle: true, padding: 15, font: { size: 12 } }
-          },
-          tooltip: {
-            backgroundColor: 'rgba(0,0,0,0.8)',
-            padding: 12,
-            titleFont: { size: 13 },
-            bodyFont: { size: 12 }
-          }
+          legend: { position: 'top' },
+          title: { display: true, text: 'System Performance Over Time' }
         },
         scales: {
-          x: { display: true, grid: { display: false } },
           y: {
             type: 'linear',
             display: true,
             position: 'left',
-            beginAtZero: true,
-            max: 100,
-            title: { display: true, text: 'CPU & RAM Usage (%)', font: { size: 12 } },
-            ticks: { callback: (v) => v + '%' }
+            title: { display: true, text: 'CPU & RAM (%)' },
+            min: 0,
+            max: 100
           },
           y1: {
             type: 'linear',
             display: true,
             position: 'right',
-            suggestedMin: 30,
-            suggestedMax: 80,
-            title: { display: true, text: 'Temperature (°C)', font: { size: 12 } },
+            title: { display: true, text: 'Temperature (°C)' },
             grid: { drawOnChartArea: false },
-            ticks: { callback: (v) => v + '°C' }
+            min: 0,
+            max: 100
           }
-        },
-        animation: { duration: 750 }
+        }
       }
     });
 
     function connectWebSocket() {
       const wsStatus = document.getElementById('wsStatus');
-      const wsText   = document.getElementById('wsText');
+      const wsText = document.getElementById('wsText');
 
       ws = new WebSocket(WS_URL);
 
       ws.onopen = () => {
         console.log('WebSocket connected');
         wsStatus.className = 'status-badge bg-success bg-opacity-10';
-        wsText.innerHTML   = '<span class="status-dot bg-success"></span>Live monitoring active';
+        wsText.innerHTML = '<span class="status-dot bg-success"></span>Connected';
       };
 
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
 
-        // System stats
-        if (data.cpu) {
-          const temp = data.temperature ? parseFloat(data.temperature) : 40;
-          const cpu  = parseFloat(data.cpu);
-          const ram  = parseFloat(data.ram);
+        // System metrics update
+        if (data.cpu !== undefined) {
+          const temp = parseFloat(data.temperature);
+          const cpu = parseFloat(data.cpu);
+          const ram = parseFloat(data.ram);
 
           document.getElementById('temp').textContent = (isFinite(temp) ? temp : 0) + '°C';
           document.getElementById('cpu').textContent  = (isFinite(cpu)  ? cpu  : 0) + '%';
@@ -525,7 +626,6 @@ ${prompt}`;
                 `;
               }
             } catch (e) {
-              // Non-JSON lines are ignored safely
               console.error('Parse error:', e);
             }
           }
@@ -545,14 +645,236 @@ ${prompt}`;
       }
     }
 
-    // Enter to send
+    // === NEW: RAG SEARCH FUNCTIONS ===
+    
+    async function searchRAG() {
+      const promptInput = document.getElementById('ragPrompt');
+      const responseDiv = document.getElementById('ragResponse');
+      const button = document.getElementById('ragBtn');
+
+      const question = promptInput.value.trim();
+      if (!question) {
+        responseDiv.innerHTML = `
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-circle"></i> Please enter a question
+          </div>`;
+        return;
+      }
+
+      button.disabled = true;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+
+      responseDiv.innerHTML = `
+        <div class="loading-rag">
+          <div class="spinner"></div>
+          <h5><i class="fas fa-search"></i> Searching the web...</h5>
+          <p class="text-muted">Finding relevant articles and generating answer</p>
+          <div class="mt-3">
+            <small class="text-muted">
+              <i class="fas fa-circle-notch fa-spin"></i> Step 1: Searching Google<br>
+              <i class="fas fa-circle-notch fa-spin"></i> Step 2: Scraping content<br>
+              <i class="fas fa-circle-notch fa-spin"></i> Step 3: Analyzing with AI<br>
+              <i class="fas fa-circle-notch fa-spin"></i> Step 4: Generating answer
+            </small>
+          </div>
+          <div class="alert alert-info mt-3" style="max-width: 500px; margin: 0 auto;">
+            <i class="fas fa-clock"></i> This may take 1-3 minutes...<br>
+            <small class="text-muted">Please be patient, the Pi is working hard! ⚡</small>
+          </div>
+        </div>
+      `;
+
+      const startTime = Date.now();
+
+      try {
+        console.log('🔍 Sending RAG request to:', `${API_URL}/api/rag`);
+        console.log('📝 Question:', question);
+        
+        // Create AbortController with 5-minute timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes
+        
+        const response = await fetch(`${API_URL}/api/rag`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question }),
+          mode: 'cors',
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+
+        if (data.error) {
+          responseDiv.innerHTML = `
+            <div class="alert alert-danger">
+              <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
+              <p>${data.error}</p>
+              ${data.details ? `<small class="text-muted">${data.details}</small>` : ''}
+            </div>`;
+        } else {
+          // Success - display the answer
+          let html = `
+            <div class="alert alert-success mb-3">
+              <i class="fas fa-check-circle"></i> Search completed in ${duration}s
+            </div>
+            
+            <div class="rag-answer">
+              <h5><i class="fas fa-lightbulb"></i> Answer:</h5>
+              <p>${escapeHtml(data.answer)}</p>
+            </div>
+          `;
+
+          // Add sources
+          if (data.sources && data.sources.length > 0) {
+            html += '<h6 class="mt-4"><i class="fas fa-book"></i> Sources:</h6>';
+            data.sources.forEach(source => {
+              html += `
+                <div class="rag-source">
+                  <div class="rag-source-title">
+                    <i class="fas fa-link"></i> ${escapeHtml(source.title)}
+                  </div>
+                  <a href="${escapeHtml(source.url)}" target="_blank" class="rag-source-url">
+                    ${escapeHtml(source.url)}
+                  </a>
+                  <div class="text-muted small mt-1">
+                    <i class="far fa-calendar"></i> ${escapeHtml(source.date)}
+                  </div>
+                </div>
+              `;
+            });
+          }
+
+          // Add metadata
+          if (data.metadata) {
+            html += `
+              <div class="rag-metadata">
+                <strong><i class="fas fa-info-circle"></i> Search Details:</strong>
+                <div class="row mt-2">
+                  <div class="col-md-3">
+                    <i class="fas fa-file-alt"></i> Chunks: ${data.metadata.chunksUsed}/${data.metadata.totalChunks}
+                  </div>
+                  <div class="col-md-3">
+                    <i class="fas fa-chart-line"></i> Best match: ${data.metadata.topSimilarity}
+                  </div>
+                  <div class="col-md-3">
+                    <i class="fas fa-text-height"></i> Context: ${data.metadata.contextLength} chars
+                  </div>
+                  <div class="col-md-3">
+                    <i class="fas fa-clock"></i> Time: ${duration}s
+                  </div>
+            `;
+            
+            // Show query refinement info if the query was refined
+            if (data.metadata.queryWasRefined && data.metadata.searchAttempts > 1) {
+              html += `
+                  <div class="col-12 mt-2">
+                    <div class="alert alert-info mb-0">
+                      <i class="fas fa-magic"></i> <strong>Query Refinement:</strong> 
+                      No results found for original query. Successfully refined after ${data.metadata.searchAttempts} attempt(s).<br>
+                      <small class="text-muted">
+                        Original: "${escapeHtml(data.metadata.originalQuery)}" → 
+                        Refined: "${escapeHtml(data.metadata.finalQuery)}"
+                      </small>
+                    </div>
+                  </div>
+              `;
+            }
+            
+            html += `
+                </div>
+              </div>
+            `;
+          }
+
+          responseDiv.innerHTML = html;
+        }
+
+      } catch (error) {
+        console.error('RAG Error:', error);
+        const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+        
+        // Provide detailed error info
+        let errorHTML = `
+          <div class="alert alert-danger">
+            <h5><i class="fas fa-exclamation-triangle"></i> Connection Error</h5>
+            <p><strong>${error.message}</strong></p>
+        `;
+        
+        // Check if it's a network error
+        if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
+          errorHTML += `
+            <hr>
+            <p class="mb-2"><strong>Troubleshooting Steps:</strong></p>
+            <ol class="text-start small mb-2">
+              <li>Check if server is running: <code>node server.js</code></li>
+              <li>Verify Cloudflare tunnel is active</li>
+              <li>Test endpoint directly:
+                <pre class="mt-2 mb-2" style="font-size: 0.75rem;">curl ${API_URL}/health</pre>
+              </li>
+              <li>Check browser console (F12) for detailed errors</li>
+              <li>Try the regular AI chat (should work if Ollama is accessible)</li>
+            </ol>
+            
+            <div class="alert alert-warning mb-0 mt-3">
+              <strong>Current API URL:</strong><br>
+              <code>${API_URL}/api/rag</code><br>
+              <small class="text-muted">Time elapsed: ${duration}s</small>
+            </div>
+          `;
+        } else if (error.message.includes('timeout')) {
+          errorHTML += `
+            <hr>
+            <p>The request timed out. This can happen if:</p>
+            <ul class="text-start small">
+              <li>The Pi is under heavy load</li>
+              <li>Google search is taking too long</li>
+              <li>Web scraping is slow</li>
+            </ul>
+            <p><strong>Suggestion:</strong> Try a simpler query like "latest iPhone features"</p>
+          `;
+        }
+        
+        errorHTML += `</div>`;
+        responseDiv.innerHTML = errorHTML;
+      } finally {
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-search"></i> Search & Answer';
+      }
+    }
+
+    function setRAGExample(question) {
+      document.getElementById('ragPrompt').value = question;
+      document.getElementById('ragPrompt').focus();
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Enter to send for RAG
+    document.getElementById('ragPrompt').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !document.getElementById('ragBtn').disabled) {
+        searchRAG();
+      }
+    });
+
+    // Enter to send for regular AI
     document.getElementById('prompt').addEventListener('keypress', function(e) {
       if (e.key === 'Enter' && !document.getElementById('sendBtn').disabled) {
         askAI();
       }
     });
 
-    // Start WS
+    // Start WebSocket connection
     connectWebSocket();
   </script>
 </body>
