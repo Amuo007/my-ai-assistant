@@ -10,223 +10,221 @@
   <link href="style.css" rel="stylesheet"/>
 </head>
 <body>
-  <div class="container-fluid">
-    <div class="row g-4">
-      <!-- System Monitor Card -->
-      <div class="col-lg-8">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <div>
-                <h2 class="mb-1"><i class="fas fa-chart-line"></i> System Monitor</h2>
-                <p class="text-muted mb-0">Real-time Raspberry Pi Statistics</p>
-              </div>
-              <span class="status-badge bg-success bg-opacity-10" id="wsStatus">
-                <span class="status-dot bg-success"></span>
-                <span id="wsText">Connecting...</span>
-              </span>
+<div class="container-fluid">
+  <div class="row g-4">
+    
+    <!-- System Monitor Card - Full Width on Top -->
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h2 class="mb-1"><i class="fas fa-chart-line"></i> System Monitor</h2>
+              <p class="text-muted mb-0">Real-time Raspberry Pi Statistics</p>
             </div>
+            <span class="status-badge bg-success bg-opacity-10" id="wsStatus">
+              <span class="status-dot bg-success"></span>
+              <span id="wsText">Connecting...</span>
+            </span>
+          </div>
 
-            <div class="row g-3 mb-4">
-              <div class="col-md-6 col-lg-3">
-                <div class="metric-card text-center">
-                  <i class="fas fa-temperature-high fa-2x text-danger mb-2"></i>
-                  <div class="metric-label">CPU Temp</div>
-                  <div class="metric-value" id="temp">--°C</div>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-3">
-                <div class="metric-card text-center">
-                  <i class="fas fa-microchip fa-2x text-primary mb-2"></i>
-                  <div class="metric-label">CPU Usage</div>
-                  <div class="metric-value" id="cpu">--%</div>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-3">
-                <div class="metric-card text-center">
-                  <i class="fas fa-memory fa-2x text-success mb-2"></i>
-                  <div class="metric-label">RAM Usage</div>
-                  <div class="metric-value" id="ram">--%</div>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-3">
-                <div class="metric-card text-center">
-                  <i class="fas fa-tasks fa-2x text-warning mb-2"></i>
-                  <div class="metric-label">Processes</div>
-                  <div class="metric-value" id="processes">--</div>
-                </div>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6 col-lg-3">
+              <div class="metric-card text-center">
+                <i class="fas fa-temperature-high fa-2x text-danger mb-2"></i>
+                <div class="metric-label">CPU Temp</div>
+                <div class="metric-value" id="temp">--°C</div>
               </div>
             </div>
+            <div class="col-md-6 col-lg-3">
+              <div class="metric-card text-center">
+                <i class="fas fa-microchip fa-2x text-primary mb-2"></i>
+                <div class="metric-label">CPU Usage</div>
+                <div class="metric-value" id="cpu">--%</div>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+              <div class="metric-card text-center">
+                <i class="fas fa-memory fa-2x text-success mb-2"></i>
+                <div class="metric-label">RAM Usage</div>
+                <div class="metric-value" id="ram">--%</div>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+              <div class="metric-card text-center">
+                <i class="fas fa-users fa-2x text-info mb-2"></i>
+                <div class="metric-label">Users Online</div>
+                <div class="metric-value" id="userCount">--</div>
+              </div>
+            </div>
+          </div>
 
-            <!-- Single Combined Chart -->
-            <div class="chart-container">
-              <canvas id="systemChart"></canvas>
-            </div>
+          <!-- Combined Chart -->
+          <div class="chart-container">
+            <canvas id="systemChart"></canvas>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- AI Assistant Card -->
-      <div class="col-lg-4">
-        <div class="card">
-          <div class="card-body">
-            <h2 class="mb-1"><i class="fas fa-robot"></i> AI Assistant</h2>
-            <p class="text-muted mb-3">Powered by Ollama</p>
+    <!-- AI Services Section Header -->
+    <div class="col-12">
+      <h3 class="text-muted mb-0"><i class="fas fa-brain"></i> AI Services</h3>
+    </div>
 
-            <div class="mb-3">
-              <label for="modelSelect" class="form-label small text-muted">Select Model:</label>
-              <select class="form-select mb-2" id="modelSelect">
-                <option value="qwen2.5:0.5b">Qwen 0.5B - Best Balance ⭐</option>
-                <option value="tinyllama">TinyLlama 1.1B - Fastest</option>
-                <option value="llama3.2:1b">Llama 3.2 1B - Better Quality</option>
-                <option value="gemma:2b">Gemma 2B - Best Quality</option>
-                <option value="deepseek-coder:1.3b">DeepSeek-Coder 1.3B - Coding 💻</option>
-                <option value="goekdenizguelmez/JOSIEFIED-Qwen3:0.6b"> Uncensored! JOSIEFIED-Qwen3 0.6B - Reasoning 🧠</option>
-              </select>
+    <!-- Local AI Assistant Card -->
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <i class="fas fa-robot fa-2x text-primary me-3"></i>
+            <div>
+              <h2 class="mb-0">Local AI Assistant</h2>
+              <p class="text-muted mb-0 small">Powered by Ollama</p>
             </div>
+          </div>
 
-            <div class="mb-3">
-              <div class="input-group">
-                <input type="text" class="form-control" id="prompt" placeholder="Ask me anything..." autofocus>
-                <button class="btn btn-gradient px-4" id="sendBtn" onclick="askAI()">
-                  <i class="fas fa-paper-plane"></i> Send
+          <div class="mb-3">
+            <label for="modelSelect" class="form-label small text-muted">Select Model:</label>
+            <select class="form-select mb-2" id="modelSelect">
+              <option value="qwen2.5:0.5b">Qwen 0.5B - Best Balance ⭐</option>
+              <option value="tinyllama">TinyLlama 1.1B - Fastest</option>
+              <option value="llama3.2:1b">Llama 3.2 1B - Better Quality</option>
+              <option value="gemma:2b">Gemma 2B - Best Quality</option>
+              <option value="deepseek-coder:1.3b">DeepSeek-Coder 1.3B - Coding 💻</option>
+              <option value="goekdenizguelmez/JOSIEFIED-Qwen3:0.6b">Uncensored! JOSIEFIED-Qwen3 0.6B - Reasoning 🧠</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <div class="input-group">
+              <input type="text" class="form-control" id="prompt" placeholder="Ask me anything..." autofocus>
+              <button class="btn btn-gradient px-4" id="sendBtn" onclick="askAI()">
+                <i class="fas fa-paper-plane"></i> Send
+              </button>
+            </div>
+          </div>
+
+          <div id="response"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Smart AI Card -->
+    <div class="col-lg-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="me-3">
+              <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                  </linearGradient>
+                </defs>
+                <path d="M50 20 C35 20 25 30 25 40 C25 45 27 50 30 53 C28 56 27 60 27 64 C27 72 33 78 40 80 C42 82 45 83 48 83 L52 83 C55 83 58 82 60 80 C67 78 73 72 73 64 C73 60 72 56 70 53 C73 50 75 45 75 40 C75 30 65 20 50 20 Z" 
+                      fill="url(#brainGradient)" stroke="#5a67d8" stroke-width="2"/>
+                <circle cx="40" cy="35" r="3" fill="#fff" opacity="0.8"/>
+                <circle cx="60" cy="35" r="3" fill="#fff" opacity="0.8"/>
+                <circle cx="35" cy="50" r="3" fill="#fff" opacity="0.8"/>
+                <circle cx="50" cy="48" r="3" fill="#fff" opacity="0.8"/>
+                <circle cx="65" cy="50" r="3" fill="#fff" opacity="0.8"/>
+                <circle cx="45" cy="65" r="3" fill="#fff" opacity="0.8"/>
+                <circle cx="55" cy="65" r="3" fill="#fff" opacity="0.8"/>
+                <path d="M50 55 Q45 50 40 55" stroke="#4299e1" stroke-width="2" fill="none" opacity="0.6"/>
+                <path d="M50 55 Q55 50 60 55" stroke="#4299e1" stroke-width="2" fill="none" opacity="0.6"/>
+                <path d="M50 60 Q42 52 35 60" stroke="#4299e1" stroke-width="1.5" fill="none" opacity="0.4"/>
+                <path d="M50 60 Q58 52 65 60" stroke="#4299e1" stroke-width="1.5" fill="none" opacity="0.4"/>
+              </svg>
+            </div>
+            <div>
+              <h2 class="mb-0">Smart AI</h2>
+              <p class="text-muted mb-0 small">Intelligent Mode Selection</p>
+            </div>
+          </div>
+          
+          <p class="text-muted mb-3">
+            <i class="fas fa-magic"></i> Automatically chooses between internet and local AI based on your query
+          </p>
+          
+          <div class="mb-3">
+            <div class="input-group">
+              <input type="text" class="form-control" id="smartPrompt" placeholder="Ask anything…">
+              <button class="btn btn-primary" onclick="askSmartAI()">
+                <i class="fas fa-brain"></i> Ask
+              </button>
+            </div>
+          </div>
+          
+          <div class="alert alert-info p-2 small mb-3">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-info-circle me-2"></i>
+              <div>
+                <strong>Mode:</strong> <span id="smartMode">🤖 Ready</span>
+              </div>
+            </div>
+          </div>
+          
+          <div id="smartResponse"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAG Web Search Card - Full Width -->
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h2 class="mb-1"><i class="fas fa-search"></i> RAG Web Search</h2>
+              <p class="text-muted mb-0">Search the web and get AI-powered answers with sources</p>
+            </div>
+            <span class="badge" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+              <i class="fas fa-globe"></i> Powered by Google + Ollama
+            </span>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-8">
+              <div class="input-group mb-3">
+                <input 
+                  type="text" 
+                  class="form-control form-control-lg" 
+                  id="ragPrompt" 
+                  placeholder="Ask about current events, latest news, products, anything..."
+                  style="border-radius: 10px 0 0 10px;">
+                <button 
+                  class="btn btn-rag btn-lg px-4" 
+                  id="ragBtn" 
+                  onclick="searchRAG()"
+                  style="border-radius: 0 10px 10px 0;">
+                  <i class="fas fa-search"></i> Search & Answer
                 </button>
               </div>
             </div>
-
-            <div id="response"></div>
+            <div class="col-lg-4">
+              <div class="d-flex gap-2 flex-wrap">
+                <button class="btn btn-outline-secondary btn-sm" onclick="setRAGExample('latest iPhone features')">
+                  <i class="fas fa-mobile-alt"></i> iPhone
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setRAGExample('AI news today')">
+                  <i class="fas fa-robot"></i> AI News
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setRAGExample('best laptop 2025')">
+                  <i class="fas fa-laptop"></i> Laptops
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-
-
-<!-- Smart AI Internet Mode Card -->
-<div class="col-lg-4">
-  <div class="card mt-4 shadow-sm">
-    <div class="card-body">
-      <div class="d-flex align-items-center mb-3">
-        <div class="me-3">
-          <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-              </linearGradient>
-            </defs>
-            <!-- Brain shape -->
-            <path d="M50 20 C35 20 25 30 25 40 C25 45 27 50 30 53 C28 56 27 60 27 64 C27 72 33 78 40 80 C42 82 45 83 48 83 L52 83 C55 83 58 82 60 80 C67 78 73 72 73 64 C73 60 72 56 70 53 C73 50 75 45 75 40 C75 30 65 20 50 20 Z" 
-                  fill="url(#brainGradient)" stroke="#5a67d8" stroke-width="2"/>
-            <!-- Neural connections -->
-            <circle cx="40" cy="35" r="3" fill="#fff" opacity="0.8"/>
-            <circle cx="60" cy="35" r="3" fill="#fff" opacity="0.8"/>
-            <circle cx="35" cy="50" r="3" fill="#fff" opacity="0.8"/>
-            <circle cx="50" cy="48" r="3" fill="#fff" opacity="0.8"/>
-            <circle cx="65" cy="50" r="3" fill="#fff" opacity="0.8"/>
-            <circle cx="45" cy="65" r="3" fill="#fff" opacity="0.8"/>
-            <circle cx="55" cy="65" r="3" fill="#fff" opacity="0.8"/>
-            <!-- Wifi waves -->
-            <path d="M50 55 Q45 50 40 55" stroke="#4299e1" stroke-width="2" fill="none" opacity="0.6"/>
-            <path d="M50 55 Q55 50 60 55" stroke="#4299e1" stroke-width="2" fill="none" opacity="0.6"/>
-            <path d="M50 60 Q42 52 35 60" stroke="#4299e1" stroke-width="1.5" fill="none" opacity="0.4"/>
-            <path d="M50 60 Q58 52 65 60" stroke="#4299e1" stroke-width="1.5" fill="none" opacity="0.4"/>
-          </svg>
-        </div>
-        <div>
-          <h2 class="mb-0">Smart AI</h2>
-          <p class="text-muted mb-0 small">Intelligent Mode Selection</p>
+          <div id="ragResponse"></div>
         </div>
       </div>
-      
-      <p class="text-muted mb-3">
-        <i class="fas fa-magic"></i> Automatically chooses between internet and local AI based on your query
-      </p>
-      
-      <div class="mb-3">
-        <div class="input-group">
-          <input type="text" class="form-control" id="smartPrompt" placeholder="Ask anything…">
-          <button class="btn btn-primary" onclick="askSmartAI()">
-            <i class="fas fa-brain"></i> Ask
-          </button>
-        </div>
-      </div>
-      
-      <div class="alert alert-info p-2 small mb-3">
-        <div class="d-flex align-items-center">
-          <i class="fas fa-info-circle me-2"></i>
-          <div>
-            <strong>Mode:</strong> <span id="smartMode">🤖 Ready</span>
-          </div>
-        </div>
-      </div>
-      
-      <div id="smartResponse"></div>
     </div>
+
   </div>
 </div>
-
-      <!-- NEW: RAG Search Card -->
-      <div class="col-lg-12">
-        <div class="card">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <h2 class="mb-1"><i class="fas fa-search"></i> RAG Web Search</h2>
-                <p class="text-muted mb-0">Search the web and get AI-powered answers with sources</p>
-              </div>
-              <span class="badge" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
-                <i class="fas fa-globe"></i> Powered by Google + Ollama
-              </span>
-            </div>
-
-            <div class="row">
-              <div class="col-lg-8">
-                <div class="input-group mb-3">
-                  <input 
-                    type="text" 
-                    class="form-control form-control-lg" 
-                    id="ragPrompt" 
-                    placeholder="Ask about current events, latest news, products, anything..."
-                    style="border-radius: 10px 0 0 10px;">
-                  <button 
-                    class="btn btn-rag btn-lg px-4" 
-                    id="ragBtn" 
-                    onclick="searchRAG()"
-                    style="border-radius: 0 10px 10px 0;">
-                    <i class="fas fa-search"></i> Search & Answer
-                  </button>
-                </div>
-              </div>
-              <div class="col-lg-4">
-                <div class="d-flex gap-2">
-                  <button class="btn btn-outline-secondary btn-sm" onclick="setRAGExample('latest iPhone features')">
-                    <i class="fas fa-mobile-alt"></i> iPhone
-                  </button>
-                  <button class="btn btn-outline-secondary btn-sm" onclick="setRAGExample('AI news today')">
-                    <i class="fas fa-robot"></i> AI News
-                  </button>
-                  <button class="btn btn-outline-secondary btn-sm" onclick="setRAGExample('best laptop 2025')">
-                    <i class="fas fa-laptop"></i> Laptops
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div id="ragResponse"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6 col-lg-3">
-        <div class="metric-card text-center">
-          <i class="fas fa-users fa-2x text-success mb-2"></i>
-          <div class="metric-label">Users Online</div>
-          <div class="metric-value" id="userCount">--</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
   <script>
