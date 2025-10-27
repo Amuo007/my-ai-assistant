@@ -101,26 +101,65 @@
 
 
 
-      <!-- NEW: Smart AI Internet Mode Card -->
+<!-- Smart AI Internet Mode Card -->
 <div class="col-lg-4">
-  <div class="card mt-4">
+  <div class="card mt-4 shadow-sm">
     <div class="card-body">
-      <h2 class="mb-1"><i class="fas fa-wifi"></i> Smart AI Search</h2>
-      <p class="text-muted mb-3">Automatically decides internet vs. local AI</p>
-
+      <div class="d-flex align-items-center mb-3">
+        <div class="me-3">
+          <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            <!-- Brain shape -->
+            <path d="M50 20 C35 20 25 30 25 40 C25 45 27 50 30 53 C28 56 27 60 27 64 C27 72 33 78 40 80 C42 82 45 83 48 83 L52 83 C55 83 58 82 60 80 C67 78 73 72 73 64 C73 60 72 56 70 53 C73 50 75 45 75 40 C75 30 65 20 50 20 Z" 
+                  fill="url(#brainGradient)" stroke="#5a67d8" stroke-width="2"/>
+            <!-- Neural connections -->
+            <circle cx="40" cy="35" r="3" fill="#fff" opacity="0.8"/>
+            <circle cx="60" cy="35" r="3" fill="#fff" opacity="0.8"/>
+            <circle cx="35" cy="50" r="3" fill="#fff" opacity="0.8"/>
+            <circle cx="50" cy="48" r="3" fill="#fff" opacity="0.8"/>
+            <circle cx="65" cy="50" r="3" fill="#fff" opacity="0.8"/>
+            <circle cx="45" cy="65" r="3" fill="#fff" opacity="0.8"/>
+            <circle cx="55" cy="65" r="3" fill="#fff" opacity="0.8"/>
+            <!-- Wifi waves -->
+            <path d="M50 55 Q45 50 40 55" stroke="#4299e1" stroke-width="2" fill="none" opacity="0.6"/>
+            <path d="M50 55 Q55 50 60 55" stroke="#4299e1" stroke-width="2" fill="none" opacity="0.6"/>
+            <path d="M50 60 Q42 52 35 60" stroke="#4299e1" stroke-width="1.5" fill="none" opacity="0.4"/>
+            <path d="M50 60 Q58 52 65 60" stroke="#4299e1" stroke-width="1.5" fill="none" opacity="0.4"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="mb-0">Smart AI</h2>
+          <p class="text-muted mb-0 small">Intelligent Mode Selection</p>
+        </div>
+      </div>
+      
+      <p class="text-muted mb-3">
+        <i class="fas fa-magic"></i> Automatically chooses between internet and local AI based on your query
+      </p>
+      
       <div class="mb-3">
         <div class="input-group">
           <input type="text" class="form-control" id="smartPrompt" placeholder="Ask anything…">
           <button class="btn btn-primary" onclick="askSmartAI()">
-            <i class="fas fa-brain"></i> Ask Smart
+            <i class="fas fa-brain"></i> Ask
           </button>
         </div>
       </div>
-
-      <div class="alert alert-info p-2 small">
-        <strong>Status:</strong> <span id="smartMode">🤖 Local AI</span>
+      
+      <div class="alert alert-info p-2 small mb-3">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-info-circle me-2"></i>
+          <div>
+            <strong>Mode:</strong> <span id="smartMode">🤖 Ready</span>
+          </div>
+        </div>
       </div>
-
+      
       <div id="smartResponse"></div>
     </div>
   </div>
