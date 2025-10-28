@@ -207,6 +207,103 @@
   </div>
 </div>
 
+
+
+      <!-- PDF RAG Card - Add this after the Smart AI Card -->
+<div class="col-lg-4">
+  <div class="card h-100 shadow-sm">
+    <div class="card-body">
+      <div class="d-flex align-items-center mb-3">
+        <div class="me-3">
+          <!-- PDF Icon -->
+          <div style="width: 50px; height: 50px; position: relative;">
+            <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="pdfGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#ee5a6f;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+              <!-- Document shape -->
+              <rect x="25" y="15" width="50" height="70" rx="3" fill="url(#pdfGradient)" stroke="#d63447" stroke-width="2"/>
+              <!-- Folded corner -->
+              <path d="M75 15 L75 25 L65 15 Z" fill="#d63447" opacity="0.6"/>
+              <!-- PDF Text -->
+              <text x="50" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#fff">PDF</text>
+              <!-- Document lines -->
+              <line x1="35" y1="30" x2="65" y2="30" stroke="#fff" stroke-width="2" opacity="0.7"/>
+              <line x1="35" y1="40" x2="65" y2="40" stroke="#fff" stroke-width="2" opacity="0.7"/>
+              <line x1="35" y1="65" x2="65" y2="65" stroke="#fff" stroke-width="2" opacity="0.5"/>
+              <line x1="35" y1="72" x2="55" y2="72" stroke="#fff" stroke-width="2" opacity="0.5"/>
+            </svg>
+          </div>
+        </div>
+        <div>
+          <h2 class="mb-0">PDF Q&A</h2>
+          <p class="text-muted mb-0 small">Ask Questions About PDFs</p>
+        </div>
+      </div>
+      
+      <p class="text-muted mb-3">
+        <i class="fas fa-file-pdf"></i> Upload a PDF and ask questions about its content
+      </p>
+
+      <!-- PDF Path Input -->
+      <div class="mb-3">
+        <label for="pdfPath" class="form-label small text-muted">PDF File Path:</label>
+        <input 
+          type="text" 
+          class="form-control form-control-sm" 
+          id="pdfPath" 
+          placeholder="./documents/test.pdf"
+          value="./test.pdf"
+        >
+        <small class="text-muted">Enter the path to your PDF file on the server</small>
+      </div>
+
+      <!-- Question Input -->
+      <div class="mb-3">
+        <label for="pdfPrompt" class="form-label small text-muted">Your Question:</label>
+        <div class="input-group">
+          <input 
+            type="text" 
+            class="form-control" 
+            id="pdfPrompt" 
+            placeholder="What is this document about?"
+          >
+          <button class="btn btn-danger" id="pdfBtn" onclick="askPDF()">
+            <i class="fas fa-question-circle"></i> Ask
+          </button>
+        </div>
+      </div>
+
+      <!-- Example Questions -->
+      <div class="mb-3">
+        <small class="text-muted d-block mb-2">Example questions:</small>
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-sm btn-outline-secondary" onclick="setPDFExample('What is the main topic?')">
+            Main Topic
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="setPDFExample('Summarize key points')">
+            Summary
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="setPDFExample('What are the conclusions?')">
+            Conclusions
+          </button>
+        </div>
+      </div>
+
+      <!-- Response Area -->
+      <div id="pdfResponse"></div>
+      
+      <!-- Mode Display -->
+      <div class="mt-3">
+        <span class="badge bg-secondary" id="pdfMode">Ready</span>
+      </div>
+    </div>
+  </div>
+</div>
+
       <!-- NEW: RAG Search Card -->
       <div class="col-lg-8">
         <div class="card">
@@ -857,6 +954,170 @@ async function askSmartAI() {
 }
 
 
+
+    // PDF RAG Function
+async function askPDF() {
+  const pdfPathInput = document.getElementById("pdfPath");
+  const promptInput = document.getElementById("pdfPrompt");
+  const responseDiv = document.getElementById("pdfResponse");
+  const modeSpan = document.getElementById("pdfMode");
+  const button = document.getElementById("pdfBtn");
+
+  const pdfPath = pdfPathInput.value.trim();
+  const question = promptInput.value.trim();
+  
+  if (!pdfPath) {
+    responseDiv.innerHTML = `
+      <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i> Please enter a PDF file path
+      </div>
+    `;
+    return;
+  }
+
+  if (!question) {
+    responseDiv.innerHTML = `
+      <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i> Please enter a question
+      </div>
+    `;
+    return;
+  }
+
+  // Disable button and show loading
+  button.disabled = true;
+  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  modeSpan.textContent = "📖 Reading PDF...";
+  modeSpan.className = "badge bg-info";
+
+  const startTime = Date.now();
+
+  responseDiv.innerHTML = `
+    <div class="text-center text-muted p-3">
+      <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
+      <p>Analyzing PDF document...</p>
+      <small>This may take a moment</small>
+    </div>
+  `;
+
+  try {
+    const response = await fetch(`${API_URL}/api/pdf-rag`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        pdfPath,
+        question,
+        config: {
+          showProgress: false,
+          showContext: false,
+          topK: 3
+        }
+      })
+    });
+
+    const data = await response.json();
+    const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || data.details || "PDF processing failed");
+    }
+
+    modeSpan.textContent = "✅ Complete";
+    modeSpan.className = "badge bg-success";
+
+    // Build response HTML
+    let html = `
+      <div class="alert alert-success">
+        <h5><i class="fas fa-file-pdf"></i> PDF Analysis Complete</h5>
+        <p class="mb-1"><strong>File:</strong> ${escapeHtml(data.pdfPath)}</p>
+        <p class="mb-0"><strong>Question:</strong> ${escapeHtml(data.question)}</p>
+      </div>
+
+      <div class="rag-answer">
+        <h6><i class="fas fa-comment-dots"></i> Answer:</h6>
+        <p class="mb-0">${escapeHtml(data.answer)}</p>
+      </div>
+    `;
+
+    // Add relevant chunks if available
+    if (data.relevantChunks && data.relevantChunks.length > 0) {
+      html += `
+        <div class="rag-sources mt-3">
+          <h6><i class="fas fa-book-open"></i> Relevant Sections:</h6>
+      `;
+
+      data.relevantChunks.forEach((chunk, index) => {
+        html += `
+          <div class="rag-source mb-2">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+              <small class="text-muted">Section ${index + 1}</small>
+              <span class="badge bg-primary">${(chunk.similarity * 100).toFixed(1)}% match</span>
+            </div>
+            <p class="mb-0 small">${escapeHtml(chunk.preview)}</p>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+    }
+
+    // Add metadata
+    html += `
+      <div class="rag-metadata mt-3">
+        <small class="text-muted">
+          <i class="fas fa-clock"></i> Processing time: ${duration}s
+        </small>
+      </div>
+    `;
+
+    responseDiv.innerHTML = html;
+
+  } catch (error) {
+    console.error('PDF RAG Error:', error);
+    const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+    
+    modeSpan.textContent = "❌ Error";
+    modeSpan.className = "badge bg-danger";
+
+    let errorHTML = `
+      <div class="alert alert-danger">
+        <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
+        <p><strong>${error.message}</strong></p>
+        <hr>
+        <p class="mb-2"><strong>Possible Issues:</strong></p>
+        <ul class="text-start small mb-0">
+          <li>PDF file not found at specified path</li>
+          <li>PDF is encrypted or corrupted</li>
+          <li>Server not running or not accessible</li>
+          <li>Insufficient memory on Raspberry Pi</li>
+        </ul>
+        <div class="mt-2">
+          <small class="text-muted">Time elapsed: ${duration}s</small>
+        </div>
+      </div>
+    `;
+    
+    responseDiv.innerHTML = errorHTML;
+
+  } finally {
+    button.disabled = false;
+    button.innerHTML = '<i class="fas fa-question-circle"></i> Ask';
+  }
+}
+
+function setPDFExample(question) {
+  document.getElementById('pdfPrompt').value = question;
+  document.getElementById('pdfPrompt').focus();
+}
+
+// Enter to send for PDF
+document.getElementById('pdfPrompt').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter' && !document.getElementById('pdfBtn').disabled) {
+    askPDF();
+  }
+});
+
+    
     
   </script>
 </body>
