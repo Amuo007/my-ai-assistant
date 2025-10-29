@@ -209,7 +209,7 @@
 
 
 
-      <!-- PDF RAG Card - Add this after the Smart AI Card -->
+     <!-- PDF RAG Card - Updated to use /api/ask endpoint -->
 <div class="col-lg-4">
   <div class="card h-100 shadow-sm">
     <div class="card-body">
@@ -240,26 +240,13 @@
         </div>
         <div>
           <h2 class="mb-0">PDF Q&A</h2>
-          <p class="text-muted mb-0 small">Ask Questions About PDFs</p>
+          <p class="text-muted mb-0 small">Ask Questions About Indexed PDFs</p>
         </div>
       </div>
       
       <p class="text-muted mb-3">
-        <i class="fas fa-file-pdf"></i> Upload a PDF and ask questions about its content
+        <i class="fas fa-file-pdf"></i> Ask questions about your indexed PDF documents (347 chunks loaded)
       </p>
-
-      <!-- PDF Path Input -->
-      <div class="mb-3">
-        <label for="pdfPath" class="form-label small text-muted">PDF File Path:</label>
-        <input 
-          type="text" 
-          class="form-control form-control-sm" 
-          id="pdfPath" 
-          placeholder="./documents/test.pdf"
-          value="./test.pdf"
-        >
-        <small class="text-muted">Enter the path to your PDF file on the server</small>
-      </div>
 
       <!-- Question Input -->
       <div class="mb-3">
@@ -269,7 +256,7 @@
             type="text" 
             class="form-control" 
             id="pdfPrompt" 
-            placeholder="What is this document about?"
+            placeholder="What topics are covered in Chapter 1?"
           >
           <button class="btn btn-danger" id="pdfBtn" onclick="askPDF()">
             <i class="fas fa-question-circle"></i> Ask
@@ -277,22 +264,34 @@
         </div>
       </div>
 
+      <!-- Top K Selector -->
+      <div class="mb-3">
+        <label for="topK" class="form-label small text-muted">Number of relevant chunks (topK):</label>
+        <select class="form-select form-select-sm" id="topK">
+          <option value="2">2 chunks (faster)</option>
+          <option value="3">3 chunks</option>
+          <option value="5" selected>5 chunks (more detail)</option>
+          <option value="7">7 chunks</option>
+          <option value="10">10 chunks (most detail)</option>
+        </select>
+      </div>
+      
       <!-- Example Questions -->
       <div class="mb-3">
         <small class="text-muted d-block mb-2">Example questions:</small>
         <div class="d-flex flex-wrap gap-2">
-          <button class="btn btn-sm btn-outline-secondary" onclick="setPDFExample('What is the main topic?')">
-            Main Topic
+          <button class="btn btn-sm btn-outline-secondary" onclick="setPDFExample('What topics are covered in Chapter 1?')">
+            Chapter 1
           </button>
-          <button class="btn btn-sm btn-outline-secondary" onclick="setPDFExample('Summarize key points')">
-            Summary
+          <button class="btn btn-sm btn-outline-secondary" onclick="setPDFExample('Explain packet delay')">
+            Packet Delay
           </button>
-          <button class="btn btn-sm btn-outline-secondary" onclick="setPDFExample('What are the conclusions?')">
-            Conclusions
+          <button class="btn btn-sm btn-outline-secondary" onclick="setPDFExample('What are network security threats?')">
+            Security
           </button>
         </div>
       </div>
-
+      
       <!-- Response Area -->
       <div id="pdfResponse"></div>
       
@@ -955,26 +954,18 @@ async function askSmartAI() {
 
 
 
-    // PDF RAG Function
+  
+// PDF RAG Function - Updated to use /api/ask endpoint
 async function askPDF() {
-  const pdfPathInput = document.getElementById("pdfPath");
   const promptInput = document.getElementById("pdfPrompt");
+  const topKSelect = document.getElementById("topK");
   const responseDiv = document.getElementById("pdfResponse");
   const modeSpan = document.getElementById("pdfMode");
   const button = document.getElementById("pdfBtn");
 
-  const pdfPath = pdfPathInput.value.trim();
   const question = promptInput.value.trim();
+  const topK = parseInt(topKSelect.value);
   
-  if (!pdfPath) {
-    responseDiv.innerHTML = `
-      <div class="alert alert-warning">
-        <i class="fas fa-exclamation-triangle"></i> Please enter a PDF file path
-      </div>
-    `;
-    return;
-  }
-
   if (!question) {
     responseDiv.innerHTML = `
       <div class="alert alert-warning">
@@ -987,7 +978,7 @@ async function askPDF() {
   // Disable button and show loading
   button.disabled = true;
   button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-  modeSpan.textContent = "📖 Reading PDF...";
+  modeSpan.textContent = "🔍 Searching PDFs...";
   modeSpan.className = "badge bg-info";
 
   const startTime = Date.now();
@@ -995,22 +986,19 @@ async function askPDF() {
   responseDiv.innerHTML = `
     <div class="text-center text-muted p-3">
       <i class="fas fa-spinner fa-spin fa-2x mb-2"></i>
-      <p>Analyzing PDF document...</p>
-      <small>This may take a moment</small>
+      <p>Searching through indexed documents...</p>
+      <small>Using top ${topK} most relevant chunks</small>
     </div>
   `;
 
   try {
-    const response = await fetch(`${API_URL}/api/pdf-rag`, {
+    const response = await fetch(`${API_URL}/api/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
-        pdfPath,
         question,
         config: {
-          showProgress: false,
-          showContext: false,
-          topK: 3
+          topK: topK
         }
       })
     });
@@ -1019,7 +1007,7 @@ async function askPDF() {
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
 
     if (!response.ok || !data.success) {
-      throw new Error(data.error || data.details || "PDF processing failed");
+      throw new Error(data.error || "PDF query failed");
     }
 
     modeSpan.textContent = "✅ Complete";
@@ -1028,8 +1016,7 @@ async function askPDF() {
     // Build response HTML
     let html = `
       <div class="alert alert-success">
-        <h5><i class="fas fa-file-pdf"></i> PDF Analysis Complete</h5>
-        <p class="mb-1"><strong>File:</strong> ${escapeHtml(data.pdfPath)}</p>
+        <h5><i class="fas fa-book"></i> Answer from ${data.sources.length} PDF(s)</h5>
         <p class="mb-0"><strong>Question:</strong> ${escapeHtml(data.question)}</p>
       </div>
 
@@ -1039,18 +1026,35 @@ async function askPDF() {
       </div>
     `;
 
+    // Add sources
+    if (data.sources && data.sources.length > 0) {
+      html += `
+        <div class="rag-sources mt-3">
+          <h6><i class="fas fa-file-pdf"></i> Sources:</h6>
+          <div class="d-flex flex-wrap gap-2 mb-2">
+      `;
+      
+      data.sources.forEach(source => {
+        const fileName = source.split('/').pop();
+        html += `<span class="badge bg-primary">${escapeHtml(fileName)}</span>`;
+      });
+      
+      html += `</div></div>`;
+    }
+
     // Add relevant chunks if available
     if (data.relevantChunks && data.relevantChunks.length > 0) {
       html += `
         <div class="rag-sources mt-3">
-          <h6><i class="fas fa-book-open"></i> Relevant Sections:</h6>
+          <h6><i class="fas fa-book-open"></i> Relevant Sections (${data.relevantChunks.length}):</h6>
       `;
 
       data.relevantChunks.forEach((chunk, index) => {
+        const fileName = chunk.source.split('/').pop();
         html += `
           <div class="rag-source mb-2">
             <div class="d-flex justify-content-between align-items-start mb-1">
-              <small class="text-muted">Section ${index + 1}</small>
+              <small class="text-muted"><i class="fas fa-file"></i> ${escapeHtml(fileName)}</small>
               <span class="badge bg-primary">${(chunk.similarity * 100).toFixed(1)}% match</span>
             </div>
             <p class="mb-0 small">${escapeHtml(chunk.preview)}</p>
@@ -1065,7 +1069,9 @@ async function askPDF() {
     html += `
       <div class="rag-metadata mt-3">
         <small class="text-muted">
-          <i class="fas fa-clock"></i> Processing time: ${duration}s
+          <i class="fas fa-clock"></i> ${duration}s | 
+          <i class="fas fa-database"></i> ${data.totalEmbeddings} total chunks | 
+          <i class="fas fa-layer-group"></i> Top ${topK} used
         </small>
       </div>
     `;
@@ -1073,7 +1079,7 @@ async function askPDF() {
     responseDiv.innerHTML = html;
 
   } catch (error) {
-    console.error('PDF RAG Error:', error);
+    console.error('PDF Query Error:', error);
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
     
     modeSpan.textContent = "❌ Error";
@@ -1086,10 +1092,9 @@ async function askPDF() {
         <hr>
         <p class="mb-2"><strong>Possible Issues:</strong></p>
         <ul class="text-start small mb-0">
-          <li>PDF file not found at specified path</li>
-          <li>PDF is encrypted or corrupted</li>
+          <li>No embeddings found - please index PDFs first</li>
           <li>Server not running or not accessible</li>
-          <li>Insufficient memory on Raspberry Pi</li>
+          <li>Network connection issue</li>
         </ul>
         <div class="mt-2">
           <small class="text-muted">Time elapsed: ${duration}s</small>
@@ -1116,7 +1121,6 @@ document.getElementById('pdfPrompt').addEventListener('keypress', function(e) {
     askPDF();
   }
 });
-
     
     
   </script>
