@@ -222,6 +222,26 @@
         </span>
       </div>
 
+      <!-- Chunk Selector -->
+      <div class="mb-3">
+        <label for="chunkSlider" class="form-label small text-muted">
+          <i class="fas fa-layer-group"></i> Number of chunks to search: 
+          <strong id="chunkValue">3</strong>
+        </label>
+        <input 
+          type="range" 
+          class="form-range" 
+          id="chunkSlider" 
+          min="1" 
+          max="10" 
+          value="3" 
+          oninput="updateChunkValue(this.value)">
+        <div class="d-flex justify-content-between">
+          <small class="text-muted">1 (Fastest)</small>
+          <small class="text-muted">10 (Most Context)</small>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-lg-8">
           <div class="input-group mb-3">
@@ -912,10 +932,15 @@ async function askSmartAI() {
 
 // === PDF RAG FUNCTIONS ===
 
+function updateChunkValue(value) {
+  document.getElementById('chunkValue').textContent = value;
+}
+
 async function askPDF() {
   const questionInput = document.getElementById('pdfQuestion');
   const responseDiv = document.getElementById('pdfResponse');
   const button = document.getElementById('pdfAskBtn');
+  const chunkCount = parseInt(document.getElementById('chunkSlider').value);
 
   const question = questionInput.value.trim();
   if (!question) {
@@ -933,7 +958,7 @@ async function askPDF() {
     <div class="loading-rag">
       <div class="spinner"></div>
       <h5><i class="fas fa-book-open"></i> Searching PDF documents...</h5>
-      <p class="text-muted">Analyzing indexed content and generating answer</p>
+      <p class="text-muted">Analyzing ${chunkCount} chunk${chunkCount > 1 ? 's' : ''} and generating answer</p>
       <div class="alert alert-info mt-3" style="max-width: 500px; margin: 0 auto;">
         <i class="fas fa-clock"></i> This usually takes 10-30 seconds...<br>
         <small class="text-muted">Searching through embedded content</small>
@@ -947,7 +972,12 @@ async function askPDF() {
     const response = await fetch(`${API_URL}/api/ask`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question })
+      body: JSON.stringify({ 
+        question,
+        config: {
+          topK: chunkCount
+        }
+      })
     });
 
     const data = await response.json();
@@ -956,7 +986,7 @@ async function askPDF() {
     if (data.success) {
       let html = `
         <div class="alert alert-success mb-3">
-          <i class="fas fa-check-circle"></i> Answer generated in ${duration}s
+          <i class="fas fa-check-circle"></i> Answer generated in ${duration}s using ${data.relevantChunks.length} chunk${data.relevantChunks.length > 1 ? 's' : ''}
         </div>
         
         <div class="rag-answer">
@@ -964,7 +994,7 @@ async function askPDF() {
           <p>${escapeHtml(data.answer)}</p>
         </div>
         
-        <h6 class="mt-4"><i class="fas fa-file-pdf"></i> Relevant Sections:</h6>
+        <h6 class="mt-4"><i class="fas fa-file-pdf"></i> Relevant Sections (${data.relevantChunks.length}):</h6>
       `;
 
       data.relevantChunks.forEach((chunk, idx) => {
@@ -983,13 +1013,16 @@ async function askPDF() {
         <div class="rag-metadata">
           <strong><i class="fas fa-info-circle"></i> Search Details:</strong>
           <div class="row mt-2">
-            <div class="col-md-4">
-              <i class="fas fa-database"></i> Total indexed: ${data.totalEmbeddings} chunks
+            <div class="col-md-3">
+              <i class="fas fa-database"></i> Total indexed: ${data.totalEmbeddings}
             </div>
-            <div class="col-md-4">
-              <i class="fas fa-check-double"></i> Used: ${data.relevantChunks.length} chunks
+            <div class="col-md-3">
+              <i class="fas fa-check-double"></i> Used: ${data.relevantChunks.length}/${chunkCount}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+              <i class="fas fa-chart-line"></i> Best match: ${data.relevantChunks[0]?.similarity || 'N/A'}
+            </div>
+            <div class="col-md-3">
               <i class="fas fa-clock"></i> Time: ${duration}s
             </div>
           </div>
