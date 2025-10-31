@@ -924,9 +924,12 @@ async function askSmartAI() {
   promptInput.focus();
 }
 
-// Add this JavaScript function to your <script> section
 
-async function askPDF() {
+
+
+
+// pdf
+  async function askPDF() {
   const promptInput = document.getElementById('pdfPrompt');
   const responseDiv = document.getElementById('pdfResponse');
   const button = document.getElementById('pdfBtn');
@@ -952,12 +955,20 @@ async function askPDF() {
         <span class="visually-hidden">Loading...</span>
       </div>
       <p class="mt-2 text-muted">Searching ${topK} chunks in your PDFs...</p>
+      <div class="alert alert-info mt-3" style="max-width: 500px; margin: 0 auto;">
+        <i class="fas fa-clock"></i> <strong>Please wait...</strong><br>
+        <small class="text-muted">This may take 30 seconds to 5 minutes depending on PDF size and complexity</small>
+      </div>
     </div>
   `;
 
   const startTime = Date.now();
 
   try {
+    // ⚡ Create AbortController with 10-minute timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 600000); // 10 minutes (600,000ms)
+
     const response = await fetch(`${API_URL}/api/ask`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -966,10 +977,13 @@ async function askPDF() {
         config: {
           topK: topK,
           embeddingModel: 'nomic-embed-text',
-          llmModel: 'qwen2.5:0.5b'
+          llmModel: 'llama3.2:1b'
         }
-      })
+      }),
+      signal: controller.signal  // ⚡ Add timeout signal
     });
+
+    clearTimeout(timeoutId); // ⚡ Clear timeout if request completes
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -1053,34 +1067,46 @@ async function askPDF() {
   } catch (error) {
     console.error('PDF Ask Error:', error);
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-    responseDiv.innerHTML = `
-      <div class="alert alert-danger">
-        <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
-        <p>${error.message}</p>
-        <hr>
-        <small>
-          <strong>Possible causes:</strong>
-          <ul class="mb-0">
-            <li>PDFs not indexed yet (use <code>/api/index-pdfs</code> first)</li>
-            <li>Server connection issue</li>
-            <li>embeddings.json file not found</li>
-          </ul>
-          Time elapsed: ${duration}s
-        </small>
-      </div>`;
+    
+    // ⚡ Better error handling for timeout
+    if (error.name === 'AbortError') {
+      responseDiv.innerHTML = `
+        <div class="alert alert-danger">
+          <h5><i class="fas fa-clock"></i> Request Timeout</h5>
+          <p>The request took longer than 10 minutes and was cancelled.</p>
+          <hr>
+          <small>
+            <strong>Suggestions:</strong>
+            <ul class="mb-0">
+              <li>Try using fewer chunks (reduce the slider to 2 or 4)</li>
+              <li>Ask a simpler question</li>
+              <li>Check if your server is overloaded</li>
+            </ul>
+            Time elapsed: ${duration}s
+          </small>
+        </div>`;
+    } else {
+      responseDiv.innerHTML = `
+        <div class="alert alert-danger">
+          <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
+          <p>${error.message}</p>
+          <hr>
+          <small>
+            <strong>Possible causes:</strong>
+            <ul class="mb-0">
+              <li>PDFs not indexed yet (use <code>/api/index-pdfs</code> first)</li>
+              <li>Server connection issue</li>
+              <li>embeddings.json file not found</li>
+            </ul>
+            Time elapsed: ${duration}s
+          </small>
+        </div>`;
+    }
   } finally {
     button.disabled = false;
     button.innerHTML = '<i class="fas fa-question-circle"></i> Ask PDF';
   }
 }
-
-// Enter key support for PDF input
-document.getElementById('pdfPrompt').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter' && !document.getElementById('pdfBtn').disabled) {
-    askPDF();
-  }
-});
-    
     
   </script>
 </body>
