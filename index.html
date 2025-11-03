@@ -7,7 +7,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-  <link href="style.css" rel="stylesheet"/>
+ 
 </head>
 <body>
 <div class="container-fluid">
@@ -99,192 +99,189 @@
         </div>
       </div>
 
+      <!-- Smart AI Card -->
+      <div class="col-lg-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <div class="me-3">
+                <!-- Animated Brain Logo -->
+                <div style="width: 50px; height: 50px; position: relative;">
+                  <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#1e3c72;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#2a5298;stop-opacity:1" />
+                      </linearGradient>
+                    </defs>
+                    <!-- Brain shape -->
+                    <path d="M50 20 C35 20 25 30 25 40 C25 45 27 50 30 53 C28 56 27 60 27 64 C27 72 33 78 40 80 C42 82 45 83 48 83 L52 83 C55 83 58 82 60 80 C67 78 73 72 73 64 C73 60 72 56 70 53 C73 50 75 45 75 40 C75 30 65 20 50 20 Z" 
+                          fill="url(#brainGradient)" stroke="#1e3c72" stroke-width="2"/>
+                    
+                    <!-- Animated Neural connections -->
+                    <circle cx="40" cy="35" r="3" fill="#fff" opacity="0.8">
+                      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="60" cy="35" r="3" fill="#fff" opacity="0.8">
+                      <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="35" cy="50" r="3" fill="#fff" opacity="0.8">
+                      <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="50" cy="48" r="3" fill="#fff" opacity="0.8">
+                      <animate attributeName="opacity" values="1;0.4;1" dur="1.8s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="65" cy="50" r="3" fill="#fff" opacity="0.8">
+                      <animate attributeName="opacity" values="0.4;1;0.4" dur="2.2s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="45" cy="65" r="3" fill="#fff" opacity="0.8">
+                      <animate attributeName="opacity" values="0.6;1;0.6" dur="1.6s" repeatCount="indefinite"/>
+                    </circle>
+                    <circle cx="55" cy="65" r="3" fill="#fff" opacity="0.8">
+                      <animate attributeName="opacity" values="1;0.5;1" dur="2.4s" repeatCount="indefinite"/>
+                    </circle>
+                    
+                    <!-- Animated Wifi waves -->
+                    <path d="M50 55 Q45 50 40 55" stroke="#2a5298" stroke-width="2" fill="none" opacity="0.6">
+                      <animate attributeName="opacity" values="0.2;0.8;0.2" dur="1.5s" repeatCount="indefinite"/>
+                    </path>
+                    <path d="M50 55 Q55 50 60 55" stroke="#2a5298" stroke-width="2" fill="none" opacity="0.6">
+                      <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/>
+                    </path>
+                    <path d="M50 60 Q42 52 35 60" stroke="#2a5298" stroke-width="1.5" fill="none" opacity="0.4">
+                      <animate attributeName="opacity" values="0.1;0.6;0.1" dur="2s" repeatCount="indefinite"/>
+                    </path>
+                    <path d="M50 60 Q58 52 65 60" stroke="#2a5298" stroke-width="1.5" fill="none" opacity="0.4">
+                      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
+                    </path>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h2 class="mb-0"><i class="fas fa-brain"></i> Smart AI</h2>
+                <p class="text-muted mb-0 small">Intelligent Mode Selection</p>
+              </div>
+            </div>
+            
+            <p class="text-muted mb-3">
+              <i class="fas fa-magic"></i> Automatically chooses between internet and local AI based on your query
+            </p>
+            
+            <!-- Response Time Warning -->
+            <div class="alert alert-theme-warning p-2 small mb-3">
+              <div class="d-flex align-items-start">
+                <i class="fas fa-clock me-2 mt-1"></i>
+                <div>
+                  <strong>⏱️ Response Time:</strong>
+                  <ul class="mb-0 ps-3 mt-1" style="font-size: 0.85rem;">
+                    <li><strong>Internet Mode:</strong> 2-5 minutes (researching web)</li>
+                    <li><strong>Local Mode:</strong> Under 30 seconds (direct answer)</li>
+                  </ul>
+                  <small class="text-muted d-block mt-1">Mode is automatically selected based on your question</small>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <div class="input-group">
+                <input type="text" class="form-control" id="smartPrompt" placeholder="Ask anything…">
+                <button class="btn btn-gradient" onclick="askSmartAI()">
+                  <i class="fas fa-brain"></i> Ask
+                </button>
+              </div>
+            </div>
+            
+            <div class="alert alert-theme-info p-2 small mb-3">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle me-2"></i>
+                <div>
+                  <strong>Current Mode:</strong> <span id="smartMode">🤖 Ready</span>
+                </div>
+              </div>
+            </div>
+            
+            <div id="smartResponse"></div>
+          </div>
+        </div>
+      </div>
 
+      <!-- PDF Q&A Card -->
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h2 class="mb-1"><i class="fas fa-file-pdf"></i> PDF Q&A</h2>
+                <p class="text-muted mb-0">Ask questions about your indexed PDFs (streaming)</p>
+              </div>
+              <span class="badge badge-gradient">
+                <i class="fas fa-database"></i> RAG System
+              </span>
+            </div>
 
-<!-- Smart AI Card -->
-<div class="col-lg-4">
-  <div class="card h-100 shadow-sm">
-    <div class="card-body">
-      <div class="d-flex align-items-center mb-3">
-        <div class="me-3">
-          <!-- Animated Brain Logo -->
-          <div style="width: 50px; height: 50px; position: relative;">
-            <svg width="50" height="50" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
-                </linearGradient>
-              </defs>
-              <!-- Brain shape -->
-              <path d="M50 20 C35 20 25 30 25 40 C25 45 27 50 30 53 C28 56 27 60 27 64 C27 72 33 78 40 80 C42 82 45 83 48 83 L52 83 C55 83 58 82 60 80 C67 78 73 72 73 64 C73 60 72 56 70 53 C73 50 75 45 75 40 C75 30 65 20 50 20 Z" 
-                    fill="url(#brainGradient)" stroke="#5a67d8" stroke-width="2"/>
+            <!-- Chunk Size Selector -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="pdfChunks" class="form-label">
+                  <i class="fas fa-layer-group"></i> Number of chunks to use:
+                </label>
+                <input 
+                  type="range" 
+                  class="form-range" 
+                  min="2" 
+                  max="10" 
+                  step="2" 
+                  value="4" 
+                  id="pdfChunks"
+                  oninput="document.getElementById('chunkValue').textContent = this.value">
+                <div class="d-flex justify-content-between small text-muted">
+                  <span>2 (Fastest)</span>
+                  <span><strong id="chunkValue">4</strong></span>
+                  <span>10 (Most Context)</span>
+                </div>
+              </div>
               
-              <!-- Animated Neural connections (pulsing) -->
-              <circle cx="40" cy="35" r="3" fill="#fff" opacity="0.8">
-                <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="60" cy="35" r="3" fill="#fff" opacity="0.8">
-                <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="35" cy="50" r="3" fill="#fff" opacity="0.8">
-                <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="50" cy="48" r="3" fill="#fff" opacity="0.8">
-                <animate attributeName="opacity" values="1;0.4;1" dur="1.8s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="65" cy="50" r="3" fill="#fff" opacity="0.8">
-                <animate attributeName="opacity" values="0.4;1;0.4" dur="2.2s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="45" cy="65" r="3" fill="#fff" opacity="0.8">
-                <animate attributeName="opacity" values="0.6;1;0.6" dur="1.6s" repeatCount="indefinite"/>
-              </circle>
-              <circle cx="55" cy="65" r="3" fill="#fff" opacity="0.8">
-                <animate attributeName="opacity" values="1;0.5;1" dur="2.4s" repeatCount="indefinite"/>
-              </circle>
-              
-              <!-- Animated Wifi waves -->
-              <path d="M50 55 Q45 50 40 55" stroke="#4299e1" stroke-width="2" fill="none" opacity="0.6">
-                <animate attributeName="opacity" values="0.2;0.8;0.2" dur="1.5s" repeatCount="indefinite"/>
-              </path>
-              <path d="M50 55 Q55 50 60 55" stroke="#4299e1" stroke-width="2" fill="none" opacity="0.6">
-                <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.5s" repeatCount="indefinite"/>
-              </path>
-              <path d="M50 60 Q42 52 35 60" stroke="#4299e1" stroke-width="1.5" fill="none" opacity="0.4">
-                <animate attributeName="opacity" values="0.1;0.6;0.1" dur="2s" repeatCount="indefinite"/>
-              </path>
-              <path d="M50 60 Q58 52 65 60" stroke="#4299e1" stroke-width="1.5" fill="none" opacity="0.4">
-                <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
-              </path>
-            </svg>
-          </div>
-        </div>
-        <div>
-          <h2 class="mb-0">Smart AI</h2>
-          <p class="text-muted mb-0 small">Intelligent Mode Selection</p>
-        </div>
-      </div>
-      
-      <p class="text-muted mb-3">
-        <i class="fas fa-magic"></i> Automatically chooses between internet and local AI based on your query
-      </p>
-      
-      <!-- Response Time Warning -->
-      <div class="alert alert-warning p-2 small mb-3">
-        <div class="d-flex align-items-start">
-          <i class="fas fa-clock me-2 mt-1"></i>
-          <div>
-            <strong>⏱️ Response Time:</strong>
-            <ul class="mb-0 ps-3 mt-1" style="font-size: 0.85rem;">
-              <li><strong>Internet Mode:</strong> 2-5 minutes (researching web)</li>
-              <li><strong>Local Mode:</strong> Under 30 seconds (direct answer)</li>
-            </ul>
-            <small class="text-muted d-block mt-1">Mode is automatically selected based on your question</small>
-          </div>
-        </div>
-      </div>
-      
-      <div class="mb-3">
-        <div class="input-group">
-          <input type="text" class="form-control" id="smartPrompt" placeholder="Ask anything…">
-          <button class="btn btn-primary" onclick="askSmartAI()">
-            <i class="fas fa-brain"></i> Ask
-          </button>
-        </div>
-      </div>
-      
-      <div class="alert alert-info p-2 small mb-3">
-        <div class="d-flex align-items-center">
-          <i class="fas fa-info-circle me-2"></i>
-          <div>
-            <strong>Current Mode:</strong> <span id="smartMode">🤖 Ready</span>
-          </div>
-        </div>
-      </div>
-      
-      <div id="smartResponse"></div>
-    </div>
-  </div>
-</div>
+              <div class="col-md-6">
+                <div class="alert alert-theme-info p-2 small mb-0">
+                  <i class="fas fa-info-circle"></i> <strong>More chunks = Better accuracy but slower</strong><br>
+                  <small class="text-muted">Recommended: 4-6 chunks for most questions</small>
+                </div>
+              </div>
+            </div>
 
+            <!-- Question Input -->
+            <div class="input-group mb-3">
+              <input 
+                type="text" 
+                class="form-control form-control-lg" 
+                id="pdfPrompt" 
+                placeholder="Ask about your PDFs..."
+                style="border-radius: 10px 0 0 10px;">
+              <button 
+                class="btn btn-gradient btn-lg px-4" 
+                id="pdfBtn" 
+                onclick="askPDF()"
+                style="border-radius: 0 10px 10px 0;">
+                <i class="fas fa-question-circle"></i> Ask PDF
+              </button>
+            </div>
 
-<!-- PDF -->
-<div class="col-lg-8">
-  <div class="card">
-    <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <h2 class="mb-1"><i class="fas fa-file-pdf"></i> PDF Q&A</h2>
-          <p class="text-muted mb-0">Ask questions about your indexed PDFs</p>
-        </div>
-        <span class="badge bg-info">
-          <i class="fas fa-database"></i> RAG System
-        </span>
-      </div>
-
-      <!-- Chunk Size Selector -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label for="pdfChunks" class="form-label">
-            <i class="fas fa-layer-group"></i> Number of chunks to use:
-          </label>
-          <input 
-            type="range" 
-            class="form-range" 
-            min="2" 
-            max="10" 
-            step="2" 
-            value="4" 
-            id="pdfChunks"
-            oninput="document.getElementById('chunkValue').textContent = this.value">
-          <div class="d-flex justify-content-between small text-muted">
-            <span>2 (Fastest)</span>
-            <span><strong id="chunkValue">4</strong></span>
-            <span>10 (Most Context)</span>
-          </div>
-        </div>
-        
-        <div class="col-md-6">
-          <div class="alert alert-info p-2 small mb-0">
-            <i class="fas fa-info-circle"></i> <strong>More chunks = Better accuracy but slower</strong><br>
-            <small class="text-muted">Recommended: 4-6 chunks for most questions</small>
+            <!-- Response Area -->
+            <div id="pdfResponse"></div>
           </div>
         </div>
       </div>
 
-      <!-- Question Input -->
-      <div class="input-group mb-3">
-        <input 
-          type="text" 
-          class="form-control form-control-lg" 
-          id="pdfPrompt" 
-          placeholder="Ask about your PDFs..."
-          style="border-radius: 10px 0 0 10px;">
-        <button 
-          class="btn btn-primary btn-lg px-4" 
-          id="pdfBtn" 
-          onclick="askPDF()"
-          style="border-radius: 0 10px 10px 0;">
-          <i class="fas fa-question-circle"></i> Ask PDF
-        </button>
-      </div>
-
-      <!-- Response Area -->
-      <div id="pdfResponse"></div>
-    </div>
-  </div>
-</div>
-
-      <!-- NEW: RAG Search Card -->
+      <!-- RAG Web Search Card -->
       <div class="col-lg-8">
         <div class="card">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <div>
                 <h2 class="mb-1"><i class="fas fa-search"></i> RAG Web Search</h2>
-                <p class="text-muted mb-0">Search the web and get AI-powered answers with sources</p>
+                <p class="text-muted mb-0">Search the web and get AI-powered answers with sources (streaming)</p>
               </div>
-              <span class="badge" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+              <span class="badge badge-gradient">
                 <i class="fas fa-globe"></i> Powered by Google + Ollama
               </span>
             </div>
@@ -299,7 +296,7 @@
                     placeholder="Ask about current events, latest news, products, anything..."
                     style="border-radius: 10px 0 0 10px;">
                   <button 
-                    class="btn btn-rag btn-lg px-4" 
+                    class="btn btn-gradient btn-lg px-4" 
                     id="ragBtn" 
                     onclick="searchRAG()"
                     style="border-radius: 0 10px 10px 0;">
@@ -327,6 +324,7 @@
         </div>
       </div>
 
+      <!-- Users Online Metric -->
       <div class="col-md-6 col-lg-3">
         <div class="metric-card text-center">
           <i class="fas fa-users fa-2x text-success mb-2"></i>
@@ -563,7 +561,7 @@ ${prompt}`;
           text = text.replace(/<think>([\s\S]*?)<\/think>/gi, function(_match, reasoning) {
             const safe = reasoning.trim();
             return `
-              <div style="background:#fff3cd;padding:12px;border-left:4px solid #ffc107;border-radius:6px;margin:8px 0;">
+              <div style="background:linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);padding:12px;border-left:4px solid #ffc107;border-radius:6px;margin:8px 0;">
                 <strong style="color:#856404;">🧠 Reasoning:</strong><br>
                 <em style="color:#856404;">${safe}</em>
               </div>
@@ -648,8 +646,7 @@ ${prompt}`;
       }
     }
 
-    // === NEW: RAG SEARCH FUNCTIONS ===
-    
+    // ✅ UPDATED: RAG Search with STREAMING
     async function searchRAG() {
       const promptInput = document.getElementById('ragPrompt');
       const responseDiv = document.getElementById('ragResponse');
@@ -667,188 +664,470 @@ ${prompt}`;
       button.disabled = true;
       button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
 
+      // Initialize status display
       responseDiv.innerHTML = `
-        <div class="loading-rag">
-          <div class="spinner"></div>
-          <h5><i class="fas fa-search"></i> Searching the web...</h5>
-          <p class="text-muted">Finding relevant articles and generating answer</p>
-          <div class="mt-3">
-            <small class="text-muted">
-              <i class="fas fa-circle-notch fa-spin"></i> Step 1: Searching Google<br>
-              <i class="fas fa-circle-notch fa-spin"></i> Step 2: Scraping content<br>
-              <i class="fas fa-circle-notch fa-spin"></i> Step 3: Analyzing with AI<br>
-              <i class="fas fa-circle-notch fa-spin"></i> Step 4: Generating answer
-            </small>
+        <div class="status-progress">
+          <div class="status-step active" id="step-searching">
+            <i class="fas fa-spinner fa-spin me-2"></i> Searching the web...
           </div>
-          <div class="alert alert-info mt-3" style="max-width: 500px; margin: 0 auto;">
-            <i class="fas fa-clock"></i> This may take 1-3 minutes...<br>
-            <small class="text-muted">Please be patient, the Pi is working hard! ⚡</small>
+          <div class="status-step" id="step-scraping">
+            <i class="far fa-circle me-2"></i> Scraping content...
+          </div>
+          <div class="status-step" id="step-embedding">
+            <i class="far fa-circle me-2"></i> Analyzing content...
+          </div>
+          <div class="status-step" id="step-generating">
+            <i class="far fa-circle me-2"></i> Generating answer...
           </div>
         </div>
+        <div id="ragStreamContent"></div>
       `;
 
+      const streamContent = document.getElementById('ragStreamContent');
       const startTime = Date.now();
+      let fullAnswer = '';
+      let metadata = null;
+      let sources = [];
 
       try {
-        console.log('🔍 Sending RAG request to:', `${API_URL}/api/rag`);
-        console.log('📝 Question:', question);
-        
-        // Create AbortController with 5-minute timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 300000); // 5 minutes
-        
         const response = await fetch(`${API_URL}/api/rag`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ question }),
-          mode: 'cors',
-          signal: controller.signal
         });
-        
-        clearTimeout(timeoutId);
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
-        const data = await response.json();
-        const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
 
-        if (data.error) {
-          responseDiv.innerHTML = `
-            <div class="alert alert-danger">
-              <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
-              <p>${data.error}</p>
-              ${data.details ? `<small class="text-muted">${data.details}</small>` : ''}
-            </div>`;
-        } else {
-          // Success - display the answer
-          let html = `
-            <div class="alert alert-success mb-3">
-              <i class="fas fa-check-circle"></i> Search completed in ${duration}s
-            </div>
-            
-            <div class="rag-answer">
-              <h5><i class="fas fa-lightbulb"></i> Answer:</h5>
-              <p>${escapeHtml(data.answer)}</p>
-            </div>
-          `;
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-          // Add sources
-          if (data.sources && data.sources.length > 0) {
-            html += '<h6 class="mt-4"><i class="fas fa-book"></i> Sources:</h6>';
-            data.sources.forEach(source => {
-              html += `
-                <div class="rag-source">
-                  <div class="rag-source-title">
-                    <i class="fas fa-link"></i> ${escapeHtml(source.title)}
-                  </div>
-                  <a href="${escapeHtml(source.url)}" target="_blank" class="rag-source-url">
-                    ${escapeHtml(source.url)}
-                  </a>
-                  <div class="text-muted small mt-1">
-                    <i class="far fa-calendar"></i> ${escapeHtml(source.date)}
-                  </div>
-                </div>
-              `;
-            });
-          }
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || ''; // Keep incomplete line in buffer
 
-          // Add metadata
-          if (data.metadata) {
-            html += `
-              <div class="rag-metadata">
-                <strong><i class="fas fa-info-circle"></i> Search Details:</strong>
-                <div class="row mt-2">
-                  <div class="col-md-3">
-                    <i class="fas fa-file-alt"></i> Chunks: ${data.metadata.chunksUsed}/${data.metadata.totalChunks}
-                  </div>
-                  <div class="col-md-3">
-                    <i class="fas fa-chart-line"></i> Best match: ${data.metadata.topSimilarity}
-                  </div>
-                  <div class="col-md-3">
-                    <i class="fas fa-text-height"></i> Context: ${data.metadata.contextLength} chars
-                  </div>
-                  <div class="col-md-3">
-                    <i class="fas fa-clock"></i> Time: ${duration}s
-                  </div>
-            `;
-            
-            // Show query refinement info if the query was refined
-            if (data.metadata.queryWasRefined && data.metadata.searchAttempts > 1) {
-              html += `
-                  <div class="col-12 mt-2">
-                    <div class="alert alert-info mb-0">
-                      <i class="fas fa-magic"></i> <strong>Query Refinement:</strong> 
-                      No results found for original query. Successfully refined after ${data.metadata.searchAttempts} attempt(s).<br>
-                      <small class="text-muted">
-                        Original: "${escapeHtml(data.metadata.originalQuery)}" → 
-                        Refined: "${escapeHtml(data.metadata.finalQuery)}"
-                      </small>
+          for (const line of lines) {
+            if (!line.trim()) continue;
+
+            try {
+              const data = JSON.parse(line);
+
+              // Handle status updates
+              if (data.status) {
+                updateRAGStatus(data.status, data.message);
+              }
+
+              // Handle metadata (sources and context info)
+              if (data.metadata) {
+                metadata = data.metadata;
+                sources = data.metadata.sources || [];
+                markStepComplete('step-embedding');
+              }
+
+              // Handle streaming answer chunks
+              if (data.chunk) {
+                if (fullAnswer === '') {
+                  // First chunk - initialize answer display
+                  markStepComplete('step-generating');
+                  streamContent.innerHTML = `
+                    <div class="rag-answer mt-3">
+                      <h5><i class="fas fa-lightbulb"></i> Answer:</h5>
+                      <p id="ragAnswerText"><span class="blinking-cursor">▊</span></p>
                     </div>
-                  </div>
-              `;
-            }
-            
-            html += `
-                </div>
-              </div>
-            `;
-          }
+                  `;
+                }
+                fullAnswer += data.chunk;
+                const answerEl = document.getElementById('ragAnswerText');
+                if (answerEl) {
+                  answerEl.innerHTML = escapeHtml(fullAnswer) + '<span class="blinking-cursor">▊</span>';
+                }
+              }
 
-          responseDiv.innerHTML = html;
+              // Handle completion
+              if (data.done || data.timing) {
+                const cursor = document.querySelector('.blinking-cursor');
+                if (cursor) cursor.remove();
+
+                const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+
+                // Build final HTML
+                let html = `
+                  <div class="alert alert-success mb-3">
+                    <i class="fas fa-check-circle"></i> Search completed in ${duration}s
+                  </div>
+                  
+                  <div class="rag-answer">
+                    <h5><i class="fas fa-lightbulb"></i> Answer:</h5>
+                    <p>${escapeHtml(fullAnswer)}</p>
+                  </div>
+                `;
+
+                // Add sources
+                if (sources && sources.length > 0) {
+                  html += '<h6 class="mt-4"><i class="fas fa-book"></i> Sources:</h6>';
+                  sources.forEach(source => {
+                    html += `
+                      <div class="rag-source">
+                        <div class="rag-source-title">
+                          <i class="fas fa-link"></i> ${escapeHtml(source.title)}
+                        </div>
+                        <a href="${escapeHtml(source.url)}" target="_blank" class="rag-source-url">
+                          ${escapeHtml(source.url)}
+                        </a>
+                        <div class="text-muted small mt-1">
+                          <i class="far fa-calendar"></i> ${escapeHtml(source.date)}
+                        </div>
+                      </div>
+                    `;
+                  });
+                }
+
+                // Add metadata
+                if (metadata) {
+                  html += `
+                    <div class="rag-metadata">
+                      <strong><i class="fas fa-info-circle"></i> Search Details:</strong>
+                      <div class="row mt-2">
+                        <div class="col-md-3">
+                          <i class="fas fa-file-alt"></i> Chunks: ${metadata.chunksUsed}/${metadata.totalChunks}
+                        </div>
+                        <div class="col-md-3">
+                          <i class="fas fa-chart-line"></i> Best match: ${metadata.topSimilarity}
+                        </div>
+                        <div class="col-md-3">
+                          <i class="fas fa-text-height"></i> Context: ${metadata.contextLength} chars
+                        </div>
+                        <div class="col-md-3">
+                          <i class="fas fa-clock"></i> Time: ${duration}s
+                        </div>
+                  `;
+                  
+                  if (metadata.queryWasRefined && metadata.searchAttempts > 1) {
+                    html += `
+                        <div class="col-12 mt-2">
+                          <div class="alert alert-theme-info mb-0">
+                            <i class="fas fa-magic"></i> <strong>Query Refinement:</strong> 
+                            No results found for original query. Successfully refined after ${metadata.searchAttempts} attempt(s).<br>
+                            <small class="text-muted">
+                              Original: "${escapeHtml(metadata.originalQuery)}" → 
+                              Refined: "${escapeHtml(metadata.finalQuery)}"
+                            </small>
+                          </div>
+                        </div>
+                    `;
+                  }
+                  
+                  html += `
+                      </div>
+                    </div>
+                  `;
+                }
+
+                responseDiv.innerHTML = html;
+              }
+
+              // Handle errors
+              if (data.error) {
+                responseDiv.innerHTML = `
+                  <div class="alert alert-danger">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
+                    <p>${data.error}</p>
+                    ${data.details ? `<small class="text-muted">${data.details}</small>` : ''}
+                  </div>`;
+              }
+
+            } catch (e) {
+              console.error('Parse error:', e, 'Line:', line);
+            }
+          }
         }
 
       } catch (error) {
         console.error('RAG Error:', error);
         const duration = ((Date.now() - startTime) / 1000).toFixed(1);
         
-        // Provide detailed error info
-        let errorHTML = `
+        responseDiv.innerHTML = `
           <div class="alert alert-danger">
             <h5><i class="fas fa-exclamation-triangle"></i> Connection Error</h5>
             <p><strong>${error.message}</strong></p>
-        `;
-        
-        // Check if it's a network error
-        if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
-          errorHTML += `
             <hr>
             <p class="mb-2"><strong>Troubleshooting Steps:</strong></p>
             <ol class="text-start small mb-2">
-              <li>Check if server is running: <code>node server.js</code></li>
+              <li>Check if server is running</li>
               <li>Verify Cloudflare tunnel is active</li>
-              <li>Test endpoint directly:
-                <pre class="mt-2 mb-2" style="font-size: 0.75rem;">curl ${API_URL}/health</pre>
-              </li>
               <li>Check browser console (F12) for detailed errors</li>
-              <li>Try the regular AI chat (should work if Ollama is accessible)</li>
             </ol>
-            
-            <div class="alert alert-warning mb-0 mt-3">
-              <strong>Current API URL:</strong><br>
-              <code>${API_URL}/api/rag</code><br>
-              <small class="text-muted">Time elapsed: ${duration}s</small>
+            <div class="alert alert-theme-warning mb-0 mt-3">
+              <strong>Time elapsed:</strong> ${duration}s
             </div>
-          `;
-        } else if (error.message.includes('timeout')) {
-          errorHTML += `
-            <hr>
-            <p>The request timed out. This can happen if:</p>
-            <ul class="text-start small">
-              <li>The Pi is under heavy load</li>
-              <li>Google search is taking too long</li>
-              <li>Web scraping is slow</li>
-            </ul>
-            <p><strong>Suggestion:</strong> Try a simpler query like "latest iPhone features"</p>
-          `;
-        }
-        
-        errorHTML += `</div>`;
-        responseDiv.innerHTML = errorHTML;
+          </div>
+        `;
       } finally {
         button.disabled = false;
         button.innerHTML = '<i class="fas fa-search"></i> Search & Answer';
+      }
+    }
+
+    function updateRAGStatus(status, message) {
+      const statusMap = {
+        'searching': 'step-searching',
+        'scraping': 'step-scraping',
+        'embedding': 'step-embedding',
+        'generating': 'step-generating'
+      };
+
+      const stepId = statusMap[status];
+      if (stepId) {
+        // Mark previous steps as complete
+        Object.keys(statusMap).forEach(key => {
+          const id = statusMap[key];
+          const el = document.getElementById(id);
+          if (el && id !== stepId) {
+            markStepComplete(id);
+          }
+        });
+
+        // Activate current step
+        const currentEl = document.getElementById(stepId);
+        if (currentEl) {
+          currentEl.className = 'status-step active';
+          currentEl.querySelector('i').className = 'fas fa-spinner fa-spin me-2';
+          const text = currentEl.textContent.trim().split('\n')[0];
+          currentEl.textContent = '';
+          currentEl.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i>${message || text}`;
+        }
+      }
+    }
+
+    function markStepComplete(stepId) {
+      const el = document.getElementById(stepId);
+      if (el) {
+        el.className = 'status-step complete';
+        el.querySelector('i').className = 'fas fa-check-circle me-2';
+      }
+    }
+
+    // ✅ UPDATED: PDF Ask with STREAMING
+    async function askPDF() {
+      const promptInput = document.getElementById('pdfPrompt');
+      const responseDiv = document.getElementById('pdfResponse');
+      const button = document.getElementById('pdfBtn');
+      const chunksSlider = document.getElementById('pdfChunks');
+
+      const question = promptInput.value.trim();
+      if (!question) {
+        responseDiv.innerHTML = `
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-circle"></i> Please enter a question
+          </div>`;
+        return;
+      }
+
+      const topK = parseInt(chunksSlider.value);
+
+      button.disabled = true;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+
+      // Initialize status display
+      responseDiv.innerHTML = `
+        <div class="status-progress">
+          <div class="status-step active" id="pdf-step-searching">
+            <i class="fas fa-spinner fa-spin me-2"></i> Searching ${topK} chunks...
+          </div>
+          <div class="status-step" id="pdf-step-generating">
+            <i class="far fa-circle me-2"></i> Generating answer...
+          </div>
+        </div>
+        <div id="pdfStreamContent"></div>
+      `;
+
+      const streamContent = document.getElementById('pdfStreamContent');
+      const startTime = Date.now();
+      let fullAnswer = '';
+      let metadata = null;
+
+      try {
+        const response = await fetch(`${API_URL}/api/ask`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            question,
+            config: {
+              topK: topK,
+              embeddingModel: 'nomic-embed-text',
+              llmModel: 'llama3.2:1b'
+            }
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            if (!line.trim()) continue;
+
+            try {
+              const data = JSON.parse(line);
+
+              // Handle status updates
+              if (data.status) {
+                if (data.status === 'generating') {
+                  markStepComplete('pdf-step-searching');
+                  const el = document.getElementById('pdf-step-generating');
+                  if (el) {
+                    el.className = 'status-step active';
+                    el.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating answer...';
+                  }
+                }
+              }
+
+              // Handle metadata
+              if (data.metadata) {
+                metadata = data.metadata;
+              }
+
+              // Handle streaming chunks
+              if (data.chunk) {
+                if (fullAnswer === '') {
+                  streamContent.innerHTML = `
+                    <div class="alert alert-light mt-3">
+                      <h5><i class="fas fa-lightbulb"></i> Answer:</h5>
+                      <p id="pdfAnswerText" style="white-space: pre-wrap;"><span class="blinking-cursor">▊</span></p>
+                    </div>
+                  `;
+                }
+                fullAnswer += data.chunk;
+                const answerEl = document.getElementById('pdfAnswerText');
+                if (answerEl) {
+                  answerEl.innerHTML = escapeHtml(fullAnswer) + '<span class="blinking-cursor">▊</span>';
+                }
+              }
+
+              // Handle completion
+              if (data.done) {
+                const cursor = document.querySelector('.blinking-cursor');
+                if (cursor) cursor.remove();
+
+                const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+
+                let html = `
+                  <div class="alert alert-success mb-3">
+                    <i class="fas fa-check-circle"></i> Answer generated in ${duration}s using ${topK} chunks
+                  </div>
+                  
+                  <div class="alert alert-light">
+                    <h5><i class="fas fa-lightbulb"></i> Answer:</h5>
+                    <p style="white-space: pre-wrap;">${escapeHtml(fullAnswer)}</p>
+                  </div>
+                `;
+
+                if (metadata && metadata.sources) {
+                  html += '<h6 class="mt-3"><i class="fas fa-file-pdf"></i> Sources Used:</h6>';
+                  metadata.sources.forEach(source => {
+                    const filename = source.split('/').pop();
+                    html += `
+                      <span class="badge bg-secondary me-2 mb-2">
+                        <i class="fas fa-file"></i> ${escapeHtml(filename)}
+                      </span>
+                    `;
+                  });
+                }
+
+                if (metadata && metadata.relevantChunks) {
+                  html += `
+                    <div class="mt-3">
+                      <h6><i class="fas fa-puzzle-piece"></i> Retrieved Chunks (${metadata.relevantChunks.length}):</h6>
+                  `;
+                  metadata.relevantChunks.forEach((chunk, i) => {
+                    html += `
+                      <div class="card mb-2">
+                        <div class="card-body p-2">
+                          <small>
+                            <strong>#${i + 1}</strong> - 
+                            <span class="badge badge-gradient">${(chunk.similarity * 100).toFixed(1)}% match</span>
+                            <span class="text-muted">from ${escapeHtml(chunk.source.split('/').pop())}</span>
+                            <br>
+                            <span class="text-muted">${escapeHtml(chunk.preview)}</span>
+                          </small>
+                        </div>
+                      </div>
+                    `;
+                  });
+                  html += '</div>';
+                }
+
+                html += `
+                  <div class="mt-3 p-2 rounded rag-metadata">
+                    <small class="text-muted">
+                      <i class="fas fa-info-circle"></i> 
+                      <strong>Stats:</strong> 
+                      ${metadata.totalEmbeddings || 0} total chunks | 
+                      ${metadata.relevantChunks ? metadata.relevantChunks.length : 0} chunks used | 
+                      ${duration}s response time
+                    </small>
+                  </div>
+                `;
+
+                responseDiv.innerHTML = html;
+              }
+
+              // Handle errors
+              if (data.error) {
+                responseDiv.innerHTML = `
+                  <div class="alert alert-danger">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
+                    <p>${data.error}</p>
+                    ${data.details ? `<small class="text-muted">${data.details}</small>` : ''}
+                  </div>`;
+              }
+
+            } catch (e) {
+              console.error('Parse error:', e);
+            }
+          }
+        }
+
+      } catch (error) {
+        console.error('PDF Ask Error:', error);
+        const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+        
+        responseDiv.innerHTML = `
+          <div class="alert alert-danger">
+            <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
+            <p>${error.message}</p>
+            <hr>
+            <small>
+              <strong>Possible causes:</strong>
+              <ul class="mb-0">
+                <li>PDFs not indexed yet</li>
+                <li>Server connection issue</li>
+                <li>Qdrant database not accessible</li>
+              </ul>
+              Time elapsed: ${duration}s
+            </small>
+          </div>`;
+      } finally {
+        button.disabled = false;
+        button.innerHTML = '<i class="fas fa-question-circle"></i> Ask PDF';
       }
     }
 
@@ -863,251 +1142,296 @@ ${prompt}`;
       return div.innerHTML;
     }
 
-    // Enter to send for RAG
+    async function askSmartAI() {
+      const promptInput = document.getElementById("smartPrompt");
+      const responseDiv = document.getElementById("smartResponse");
+      const modeSpan = document.getElementById("smartMode");
+
+      const prompt = promptInput.value.trim();
+      if (!prompt) return;
+
+      // ✅ Track TOTAL time from query start
+      const queryStartTime = Date.now();
+
+      // Show initial loading
+      responseDiv.innerHTML = `
+        <div class="text-center text-muted">
+          <i class="fas fa-spinner fa-spin"></i> Analyzing query...
+        </div>
+      `;
+
+      try {
+        const response = await fetch(`${API_URL}/api/chat-smart`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        // Both modes now stream!
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let fullAnswer = '';
+        let metadata = null;
+        let mode = null;
+        const llmStartTime = Date.now();  // ✅ Track LLM generation time
+        let tokenCount = 0;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            if (!line.trim()) continue;
+
+            try {
+              const data = JSON.parse(line);
+
+              // Mode indicator
+              if (data.mode) {
+                mode = data.mode;
+                
+                if (mode === 'rag') {
+                  modeSpan.textContent = "🌍 Web Search Mode";
+                  // Initialize RAG streaming display
+                  responseDiv.innerHTML = `
+                    <div class="status-progress">
+                      <div class="status-step active" id="smart-step-searching">
+                        <i class="fas fa-spinner fa-spin me-2"></i> Searching...
+                      </div>
+                      <div class="status-step" id="smart-step-generating">
+                        <i class="far fa-circle me-2"></i> Generating answer...
+                      </div>
+                    </div>
+                    <div id="smartStreamContent"></div>
+                  `;
+                } else if (mode === 'local') {
+                  modeSpan.textContent = "🤖 Local AI";
+                  // Initialize local LLM streaming display
+                  responseDiv.innerHTML = `
+                    <div class="alert alert-light" id="smartStreamingResponse">
+                      <strong><i class="fas fa-comment-dots"></i> AI:</strong><br><br>
+                      <span id="smartAnswerText"><span class="blinking-cursor">▊</span></span>
+                    </div>
+                  `;
+                }
+                continue;
+              }
+
+              // RAG-specific handling
+              if (mode === 'rag') {
+                // Status updates
+                if (data.status) {
+                  if (data.status === 'searching' || data.status === 'scraping' || data.status === 'embedding') {
+                    const el = document.getElementById('smart-step-searching');
+                    if (el) {
+                      el.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i>${data.message || 'Processing...'}`;
+                    }
+                  } else if (data.status === 'generating') {
+                    markStepComplete('smart-step-searching');
+                    const el = document.getElementById('smart-step-generating');
+                    if (el) {
+                      el.className = 'status-step active';
+                      el.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating answer...';
+                    }
+                  }
+                }
+
+                // Metadata
+                if (data.metadata) {
+                  metadata = data.metadata;
+                  markStepComplete('smart-step-searching');
+                }
+
+                // Streaming chunks
+                if (data.chunk) {
+                  if (fullAnswer === '') {
+                    const streamContent = document.getElementById('smartStreamContent');
+                    if (streamContent) {
+                      streamContent.innerHTML = `
+                        <div class="alert alert-light mt-3">
+                          <h5><i class="fas fa-lightbulb"></i> Answer:</h5>
+                          <p id="smartAnswerText"><span class="blinking-cursor">▊</span></p>
+                        </div>
+                      `;
+                    }
+                  }
+                  fullAnswer += data.chunk;
+                  const answerEl = document.getElementById('smartAnswerText');
+                  if (answerEl) {
+                    answerEl.innerHTML = escapeHtml(fullAnswer) + '<span class="blinking-cursor">▊</span>';
+                  }
+                }
+
+                // Completion
+                if (data.done || data.timing) {
+                  const cursor = document.querySelector('.blinking-cursor');
+                  if (cursor) cursor.remove();
+
+                  const totalElapsedTime = ((Date.now() - queryStartTime) / 1000).toFixed(2);
+
+                  let html = `
+                    <div class="alert alert-success mb-3">
+                      <i class="fas fa-check-circle"></i> Search completed in ${totalElapsedTime}s
+                    </div>
+                    
+                    <div class="alert alert-light">
+                      <h5><i class="fas fa-lightbulb"></i> Answer:</h5>
+                      <p>${escapeHtml(fullAnswer)}</p>
+                    </div>
+                  `;
+
+                  // Add sources if available
+                  if (metadata && metadata.sources) {
+                    html += '<h6 class="mt-3"><i class="fas fa-book"></i> Sources:</h6>';
+                    metadata.sources.forEach(source => {
+                      html += `
+                        <div class="rag-source">
+                          <div class="rag-source-title">
+                            <i class="fas fa-link"></i> ${escapeHtml(source.title || 'Source')}
+                          </div>
+                          <a href="${escapeHtml(source.url)}" target="_blank" class="rag-source-url">
+                            ${escapeHtml(source.url)}
+                          </a>
+                        </div>
+                      `;
+                    });
+                  }
+
+                  // Add timing details if available
+                  if (data.timing || metadata) {
+                    html += `
+                      <div class="stats-box mt-3">
+                        <strong><i class="fas fa-clock"></i> Timing Breakdown:</strong><br>
+                        <div class="row mt-2">
+                          <div class="col-6"><strong>Total Time:</strong> ${totalElapsedTime}s</div>
+                    `;
+                    
+                    if (metadata && metadata.timing) {
+                      html += `
+                          <div class="col-6">Search: ${(metadata.timing.searchElapsed / 1000).toFixed(2)}s</div>
+                          <div class="col-6">Scraping: ${(metadata.timing.scrapeElapsed / 1000).toFixed(2)}s</div>
+                          <div class="col-6">Embedding: ${(metadata.timing.embedElapsed / 1000).toFixed(2)}s</div>
+                      `;
+                    }
+                    
+                    html += `
+                        </div>
+                        <small class="text-muted d-block mt-2">
+                          <i class="fas fa-info-circle"></i> Total time from query to final response
+                        </small>
+                      </div>
+                    `;
+                  }
+
+                  responseDiv.innerHTML = html;
+                }
+              }
+              
+              // Local LLM streaming handling
+              else if (mode === 'local' && data.response) {
+                fullAnswer += data.response;
+                tokenCount++;  // ✅ Count tokens
+                const answerEl = document.getElementById('smartAnswerText');
+                if (answerEl) {
+                  answerEl.innerHTML = escapeHtml(fullAnswer) + '<span class="blinking-cursor">▊</span>';
+                }
+              }
+              
+              // ✅ Handle local LLM completion
+              if (mode === 'local' && data.done) {
+                const totalElapsedTime = ((Date.now() - queryStartTime) / 1000).toFixed(2);
+                const llmGenerationTime = ((Date.now() - llmStartTime) / 1000).toFixed(2);
+                const tokensPerSec = (tokenCount / Math.max(llmGenerationTime, 0.01)).toFixed(1);
+
+                // Remove cursor
+                const cursor = document.querySelector('.blinking-cursor');
+                if (cursor) cursor.remove();
+                
+                // Add stats box with both times
+                const streamingResponse = document.getElementById('smartStreamingResponse');
+                if (streamingResponse) {
+                  streamingResponse.innerHTML += `
+                    <div class="stats-box mt-3">
+                      <strong><i class="fas fa-clock"></i> Performance Stats:</strong><br>
+                      <div class="row mt-2">
+                        <div class="col-6"><strong>Total Time:</strong> ${totalElapsedTime}s</div>
+                        <div class="col-6">LLM Time: ${llmGenerationTime}s</div>
+                        <div class="col-6">Speed: ${tokensPerSec} tok/s</div>
+                        <div class="col-6">Output: ${data.eval_count || tokenCount} tokens</div>
+                      </div>
+                      <small class="text-muted d-block mt-2">
+                        <i class="fas fa-info-circle"></i> Total time includes classification + generation
+                      </small>
+                    </div>
+                  `;
+                }
+              }
+
+              // Errors
+              if (data.error) {
+                responseDiv.innerHTML = `
+                  <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> ${data.error}
+                  </div>
+                `;
+              }
+
+            } catch (e) {
+              console.error('Parse error:', e);
+            }
+          }
+        }
+
+      } catch (err) {
+        console.error(err);
+        modeSpan.textContent = "❌ Error";
+        responseDiv.innerHTML = `
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i> Error: ${err.message}
+          </div>
+        `;
+      }
+
+      promptInput.value = "";
+      promptInput.focus();
+    }
+
+    // Enter key listeners
     document.getElementById('ragPrompt').addEventListener('keypress', function(e) {
       if (e.key === 'Enter' && !document.getElementById('ragBtn').disabled) {
         searchRAG();
       }
     });
 
-    // Enter to send for regular AI
     document.getElementById('prompt').addEventListener('keypress', function(e) {
       if (e.key === 'Enter' && !document.getElementById('sendBtn').disabled) {
         askAI();
       }
     });
 
+    document.getElementById('smartPrompt').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        askSmartAI();
+      }
+    });
+
+    document.getElementById('pdfPrompt').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !document.getElementById('pdfBtn').disabled) {
+        askPDF();
+      }
+    });
+
     // Start WebSocket connection
     connectWebSocket();
-
-async function askSmartAI() {
-  const promptInput = document.getElementById("smartPrompt");
-  const responseDiv = document.getElementById("smartResponse");
-  const modeSpan = document.getElementById("smartMode");
-
-  const prompt = promptInput.value.trim();
-  if (!prompt) return;
-
-  responseDiv.innerHTML = `
-    <div class="text-center text-muted">
-      <i class="fas fa-spinner fa-spin"></i> Thinking…
-    </div>
-  `;
-
-  try {
-    const response = await fetch(`${API_URL}/api/chat-smart`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
-    });
-
-    const data = await response.json();
-
-    if (data.mode === "rag") {
-      modeSpan.textContent = "🌍 Web Search Mode";
-      responseDiv.innerHTML = `<p>${data.result.answer || "No answer available"}</p>`;
-    } else {
-      modeSpan.textContent = "🤖 Local AI";
-      responseDiv.innerHTML = `<p>${data.response || "No reply"}</p>`;
-    }
-
-  } catch (err) {
-    console.error(err);
-    responseDiv.innerHTML = `
-      <div class="alert alert-danger">
-        <i class="fas fa-exclamation-circle"></i> Error: ${err.message}
-      </div>
-    `;
-  }
-
-  promptInput.value = "";
-  promptInput.focus();
-}
-
-
-
-
-
-// pdf
-  async function askPDF() {
-  const promptInput = document.getElementById('pdfPrompt');
-  const responseDiv = document.getElementById('pdfResponse');
-  const button = document.getElementById('pdfBtn');
-  const chunksSlider = document.getElementById('pdfChunks');
-
-  const question = promptInput.value.trim();
-  if (!question) {
-    responseDiv.innerHTML = `
-      <div class="alert alert-warning">
-        <i class="fas fa-exclamation-circle"></i> Please enter a question
-      </div>`;
-    return;
-  }
-
-  const topK = parseInt(chunksSlider.value);
-
-  button.disabled = true;
-  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
-
-  responseDiv.innerHTML = `
-    <div class="text-center my-4">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-      <p class="mt-2 text-muted">Searching ${topK} chunks in your PDFs...</p>
-      <div class="alert alert-info mt-3" style="max-width: 500px; margin: 0 auto;">
-        <i class="fas fa-clock"></i> <strong>Please wait...</strong><br>
-        <small class="text-muted">This may take 30 seconds to 5 minutes depending on PDF size and complexity</small>
-      </div>
-    </div>
-  `;
-
-  const startTime = Date.now();
-
-  try {
-    // ⚡ Create AbortController with 10-minute timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 600000); // 10 minutes (600,000ms)
-
-    const response = await fetch(`${API_URL}/api/ask`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        question,
-        config: {
-          topK: topK,
-          embeddingModel: 'nomic-embed-text',
-          llmModel: 'qwen2.5:0.5b'
-        }
-      }),
-      signal: controller.signal  // ⚡ Add timeout signal
-    });
-
-    clearTimeout(timeoutId); // ⚡ Clear timeout if request completes
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-
-    if (data.error) {
-      responseDiv.innerHTML = `
-        <div class="alert alert-danger">
-          <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
-          <p>${data.error}</p>
-        </div>`;
-    } else {
-      // Success
-      let html = `
-        <div class="alert alert-success mb-3">
-          <i class="fas fa-check-circle"></i> Answer generated in ${duration}s using ${topK} chunks
-        </div>
-        
-        <div class="alert alert-light">
-          <h5><i class="fas fa-lightbulb"></i> Answer:</h5>
-          <p style="white-space: pre-wrap;">${escapeHtml(data.answer)}</p>
-        </div>
-      `;
-
-      // Sources
-      if (data.sources && data.sources.length > 0) {
-        html += '<h6 class="mt-3"><i class="fas fa-file-pdf"></i> Sources Used:</h6>';
-        data.sources.forEach(source => {
-          const filename = source.split('/').pop();
-          html += `
-            <span class="badge bg-secondary me-2 mb-2">
-              <i class="fas fa-file"></i> ${escapeHtml(filename)}
-            </span>
-          `;
-        });
-      }
-
-      // Relevant chunks preview
-      if (data.relevantChunks && data.relevantChunks.length > 0) {
-        html += `
-          <div class="mt-3">
-            <h6><i class="fas fa-puzzle-piece"></i> Retrieved Chunks (${data.relevantChunks.length}):</h6>
-        `;
-        data.relevantChunks.forEach((chunk, i) => {
-          html += `
-            <div class="card mb-2">
-              <div class="card-body p-2">
-                <small>
-                  <strong>#${i + 1}</strong> - 
-                  <span class="badge bg-info">${(chunk.similarity * 100).toFixed(1)}% match</span>
-                  <span class="text-muted">from ${escapeHtml(chunk.source.split('/').pop())}</span>
-                  <br>
-                  <span class="text-muted">${escapeHtml(chunk.preview)}</span>
-                </small>
-              </div>
-            </div>
-          `;
-        });
-        html += '</div>';
-      }
-
-      // Stats
-      html += `
-        <div class="mt-3 p-2 bg-light rounded">
-          <small class="text-muted">
-            <i class="fas fa-info-circle"></i> 
-            <strong>Stats:</strong> 
-            ${data.totalEmbeddings} total chunks indexed | 
-            ${data.relevantChunks.length} chunks used | 
-            ${duration}s response time
-          </small>
-        </div>
-      `;
-
-      responseDiv.innerHTML = html;
-    }
-
-  } catch (error) {
-    console.error('PDF Ask Error:', error);
-    const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-    
-    // ⚡ Better error handling for timeout
-    if (error.name === 'AbortError') {
-      responseDiv.innerHTML = `
-        <div class="alert alert-danger">
-          <h5><i class="fas fa-clock"></i> Request Timeout</h5>
-          <p>The request took longer than 10 minutes and was cancelled.</p>
-          <hr>
-          <small>
-            <strong>Suggestions:</strong>
-            <ul class="mb-0">
-              <li>Try using fewer chunks (reduce the slider to 2 or 4)</li>
-              <li>Ask a simpler question</li>
-              <li>Check if your server is overloaded</li>
-            </ul>
-            Time elapsed: ${duration}s
-          </small>
-        </div>`;
-    } else {
-      responseDiv.innerHTML = `
-        <div class="alert alert-danger">
-          <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
-          <p>${error.message}</p>
-          <hr>
-          <small>
-            <strong>Possible causes:</strong>
-            <ul class="mb-0">
-              <li>PDFs not indexed yet (use <code>/api/index-pdfs</code> first)</li>
-              <li>Server connection issue</li>
-              <li>embeddings.json file not found</li>
-            </ul>
-            Time elapsed: ${duration}s
-          </small>
-        </div>`;
-    }
-  } finally {
-    button.disabled = false;
-    button.innerHTML = '<i class="fas fa-question-circle"></i> Ask PDF';
-  }
-}
-    
   </script>
 </body>
 </html>
