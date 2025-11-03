@@ -1,3 +1,4 @@
+
     body {
       background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
       min-height: 100vh;
@@ -66,7 +67,7 @@
       color: white;
     }
     .chart-container { position: relative; height: 300px; margin-top: 20px; }
-    #response, #ragResponse {
+    #response, #ragResponse, #smartResponse, #pdfResponse {
       background: #f8f9fa;
       border-radius: 10px;
       padding: 20px;
@@ -118,7 +119,7 @@
     /* RAG Specific Styles */
     .rag-source {
       background: #fff;
-      border-left: 4px solid #667eea;
+      border-left: 4px solid #2a5298;
       padding: 12px;
       margin: 10px 0;
       border-radius: 6px;
@@ -126,7 +127,7 @@
     }
     .rag-source-title {
       font-weight: bold;
-      color: #667eea;
+      color: #2a5298;
       margin-bottom: 5px;
     }
     .rag-source-url {
@@ -136,7 +137,7 @@
       word-break: break-all;
     }
     .rag-source-url:hover {
-      color: #667eea;
+      color: #2a5298;
       text-decoration: underline;
     }
     .rag-answer {
@@ -147,7 +148,7 @@
       line-height: 1.6;
     }
     .rag-metadata {
-      background: #e3f2fd;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       padding: 10px;
       border-radius: 6px;
       font-size: 0.85rem;
@@ -161,7 +162,7 @@
       width: 50px;
       height: 50px;
       border: 5px solid #f3f3f3;
-      border-top: 5px solid #667eea;
+      border-top: 5px solid #2a5298;
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin: 0 auto 20px;
@@ -169,4 +170,44 @@
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+    
+    /* Badge styling */
+    .badge-gradient {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+    }
+    
+    /* Alert styling to match theme */
+    .alert-theme-warning {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+      border-left: 4px solid #ffc107;
+      border-radius: 10px;
+    }
+    
+    .alert-theme-info {
+      background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+      border-left: 4px solid #17a2b8;
+      border-radius: 10px;
+    }
+
+    /* Status progress bar */
+    .status-progress {
+      background: #e9ecef;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .status-step {
+      display: flex;
+      align-items: center;
+      margin: 5px 0;
+      font-size: 0.9rem;
+    }
+    .status-step.active {
+      color: #2a5298;
+      font-weight: bold;
+    }
+    .status-step.complete {
+      color: #28a745;
     }
