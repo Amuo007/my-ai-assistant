@@ -1,73 +1,76 @@
-// WebSocket + Chart (unchanged logic)
 let ws;
 const maxDataPoints = 30;
 const timeLabels = [];
 const cpuData = [];
 const ramData = [];
 const tempData = [];
+let systemChart;
 
-// Chart setup
-const ctx = document.getElementById('systemChart').getContext('2d');
-const systemChart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: timeLabels,
-    datasets: [
-      {
-        label: 'CPU %',
-        data: cpuData,
-        borderColor: 'rgb(42, 82, 152)',
-        backgroundColor: 'rgba(42, 82, 152, 0.1)',
-        tension: 0.4,
-        fill: true
-      },
-      {
-        label: 'RAM %',
-        data: ramData,
-        borderColor: 'rgb(40, 167, 69)',
-        backgroundColor: 'rgba(40, 167, 69, 0.1)',
-        tension: 0.4,
-        fill: true
-      },
-      {
-        label: 'Temp °C',
-        data: tempData,
-        borderColor: 'rgb(220, 53, 69)',
-        backgroundColor: 'rgba(220, 53, 69, 0.1)',
-        tension: 0.4,
-        fill: true,
-        yAxisID: 'y1'
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    interaction: { mode: 'index', intersect: false },
-    plugins: {
-      legend: { position: 'top' },
-      title: { display: true, text: 'System Performance Over Time' }
+document.addEventListener('DOMContentLoaded', function() {
+  const ctx = document.getElementById('systemChart').getContext('2d');
+  systemChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: timeLabels,
+      datasets: [
+        {
+          label: 'CPU %',
+          data: cpuData,
+          borderColor: 'rgb(42, 82, 152)',
+          backgroundColor: 'rgba(42, 82, 152, 0.1)',
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'RAM %',
+          data: ramData,
+          borderColor: 'rgb(40, 167, 69)',
+          backgroundColor: 'rgba(40, 167, 69, 0.1)',
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'Temp °C',
+          data: tempData,
+          borderColor: 'rgb(220, 53, 69)',
+          backgroundColor: 'rgba(220, 53, 69, 0.1)',
+          tension: 0.4,
+          fill: true,
+          yAxisID: 'y1'
+        }
+      ]
     },
-    scales: {
-      y: {
-        type: 'linear',
-        display: true,
-        position: 'left',
-        title: { display: true, text: 'CPU & RAM (%)' },
-        min: 0,
-        max: 100
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: 'System Performance Over Time' }
       },
-      y1: {
-        type: 'linear',
-        display: true,
-        position: 'right',
-        title: { display: true, text: 'Temperature (°C)' },
-        grid: { drawOnChartArea: false },
-        min: 0,
-        max: 100
+      scales: {
+        y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          title: { display: true, text: 'CPU & RAM (%)' },
+          min: 0,
+          max: 100
+        },
+        y1: {
+          type: 'linear',
+          display: true,
+          position: 'right',
+          title: { display: true, text: 'Temperature (°C)' },
+          grid: { drawOnChartArea: false },
+          min: 0,
+          max: 100
+        }
       }
     }
-  }
+  });
+
+  connectWebSocket();
 });
 
 function connectWebSocket() {
@@ -85,7 +88,6 @@ function connectWebSocket() {
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
-    // System metrics update
     if (data.cpu !== undefined) {
       const temp = parseFloat(data.temperature);
       const cpu = parseFloat(data.cpu);
@@ -111,19 +113,16 @@ function connectWebSocket() {
       systemChart.update();
     }
 
-    // Active users
     if (data.type === 'user_count') {
       document.getElementById('userCount').textContent = data.count;
     }
 
-    // Connection confirmation
     if (data.type === 'connection') {
       console.log('Connected as user:', data.userId);
       document.getElementById('userCount').textContent = data.userCount;
     }
   };
 
-  // Keep-alive ping
   setInterval(() => {
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ type: 'ping', timestamp: Date.now() }));
@@ -143,6 +142,3 @@ function connectWebSocket() {
     setTimeout(connectWebSocket, 5000);
   };
 }
-
-// Start WebSocket connection
-connectWebSocket();
