@@ -1,4 +1,3 @@
-// Shared constants + helpers + key listeners (unchanged logic)
 const API_URL = 'https://vacation-hugh-underground-zinc.trycloudflare.com';
 const WS_URL  = 'wss://vacation-hugh-underground-zinc.trycloudflare.com';
 
@@ -21,27 +20,28 @@ function markStepComplete(stepId) {
   }
 }
 
-// Enter key listeners (same as original)
-document.getElementById('ragPrompt').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter' && !document.getElementById('ragBtn').disabled) {
-    searchRAG();
-  }
-});
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('ragPrompt').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !document.getElementById('ragBtn').disabled) {
+      searchRAG();
+    }
+  });
 
-document.getElementById('prompt').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter' && !document.getElementById('sendBtn').disabled) {
-    askAI();
-  }
-});
+  document.getElementById('prompt').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !document.getElementById('sendBtn').disabled) {
+      askAI();
+    }
+  });
 
-document.getElementById('smartPrompt').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    askSmartAI();
-  }
-});
+  document.getElementById('smartPrompt').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      askSmartAI();
+    }
+  });
 
-document.getElementById('pdfPrompt').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter' && !document.getElementById('pdfBtn').disabled) {
-    askPDF();
-  }
+  document.getElementById('pdfPrompt').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !document.getElementById('pdfBtn').disabled) {
+      askPDF();
+    }
+  });
 });
