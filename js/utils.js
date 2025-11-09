@@ -1,6 +1,6 @@
 // Shared constants + helpers + key listeners (unchanged logic)
-const API_URL = 'https://concerned-productive-parker-flight.trycloudflare.com';
-const WS_URL  = 'wss://concerned-productive-parker-flight.trycloudflare.com';
+const API_URL = 'https://eagles-titten-stephanie-broadcasting.trycloudflare.com';
+const WS_URL  = 'wss://eagles-titten-stephanie-broadcasting.trycloudflare.com';
 
 function setRAGExample(question) {
   document.getElementById('ragPrompt').value = question;
